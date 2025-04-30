@@ -1,0 +1,21 @@
+import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import Playout from './pages/Playout';
+import Home from './pages/Home';
+import { GlobalStyle } from './Style/PlayoutStyle';
+
+const App: React.FC = () => {
+  return (
+    <>
+      <GlobalStyle />
+      <Routes>
+        <Route path="/" element={<Playout />}>
+        <Route index element={<Navigate to="/" replace />} />
+        <Route path="home" element={<Home />} />
+        </Route>
+      </Routes>
+    </>
+  );
+}
+
+export default App;
