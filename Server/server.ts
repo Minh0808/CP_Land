@@ -15,7 +15,6 @@ const {
   EMAIL_USER = '',
   EMAIL_PASS = '',
   ADMIN_EMAIL = '',
-  PORT = '4000',
 } = process.env;
 
 // Validate env
@@ -50,8 +49,9 @@ const transporter = nodemailer.createTransport({
 const app = express();
 
 // 3) Middleware
-app.use(cors({ origin: 'http://localhost:5173' }));
-app.use(express.json());
+const { FRONTEND_URL = '' } = process.env;
+app.use(cors({ origin: FRONTEND_URL }));
+
 
 type SignupBody = {
   email: string;
@@ -106,7 +106,5 @@ app.post(
   }
 );
 
-// 5) Khởi server
-app.listen(Number(PORT), () => {
-  console.log(`Backend chạy tại http://localhost:${PORT}`);
-});
+// bỏ app.listen(...)
+export default app;
