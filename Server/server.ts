@@ -47,7 +47,7 @@ const transporter = nodemailer.createTransport({
 });
 
 const app = express();
-
+app.use(express.json());
 // 3) Middleware
 const { FRONTEND_URL = '' } = process.env;
 app.use(cors({ origin: FRONTEND_URL }));
