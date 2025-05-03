@@ -32,7 +32,7 @@ const ModalSignUp: React.FC<Props> = ({ onClose }) => {
     }, CLOSE_DURATION);
   };
 
-  const API = import.meta.env.VITE_API_URL;
+  const API = import.meta.env.FRONTEND_URL;
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
