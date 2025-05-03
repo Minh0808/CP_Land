@@ -53,7 +53,7 @@ const { FRONTEND_URL = '' } = process.env;
 app.use(cors({ origin: FRONTEND_URL }));
 
 // **Thêm route test để hiển thị server đang hoạt động:**
-app.get('/api/signup', (_req, res) => {
+app.get('/', (_req, res) => {
    res.send('✅ Server CP_Land đang hoạt động!');
  });
  
@@ -74,7 +74,7 @@ type SignupBody = {
  * - Gửi mail cho admin
  */
 app.post(
-  '/api/signup',
+  '/',
   async (req: Request<unknown, unknown, SignupBody>, res: Response) => {
     const { email, phone } = req.body;
 
