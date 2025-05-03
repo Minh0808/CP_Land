@@ -52,7 +52,16 @@ const app = express();
 const { FRONTEND_URL = '' } = process.env;
 app.use(cors({ origin: FRONTEND_URL }));
 
-
+// **Thêm route test để hiển thị server đang hoạt động:**
+app.get('/', (_req, res) => {
+   res.send('✅ Server CP_Land đang hoạt động!');
+ });
+ 
+ // (Tuỳ chọn) route ping dưới dạng JSON
+ app.get('/api/ping', (_req, res) => {
+   res.json({ ok: true, timestamp: new Date().toISOString() });
+ });
+ 
 type SignupBody = {
   email: string;
   phone: string;
