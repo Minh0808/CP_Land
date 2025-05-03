@@ -4,12 +4,13 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-      "dev:client": "vite",
-      "dev:server": "ts-node-dev --project Server/tsconfig.json --respawn Server/server.ts",
-      "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
-      "build": "vite build"
-   },
+    "dev:client": "vite",
+    "dev:server": "ts-node-dev --project Server/tsconfig.json --respawn Server/server.ts",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "build": "vite build"
+  },
   "dependencies": {
+    "@vercel/node": "^5.1.15",
     "dotenv": "^16.5.0",
     "mysql2": "^3.14.1",
     "react": "^19.0.0",
