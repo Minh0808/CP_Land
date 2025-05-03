@@ -32,6 +32,8 @@ const ModalSignUp: React.FC<Props> = ({ onClose }) => {
     }, CLOSE_DURATION);
   };
 
+  const API = import.meta.env.VITE_API_URL;
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -44,10 +46,10 @@ const ModalSignUp: React.FC<Props> = ({ onClose }) => {
     setLoading(true);
 
     try {
-      const res = await fetch('/api/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, phone }),
+      const res = await fetch(`${API}/api/signup`, {
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json' },
+         body: JSON.stringify({ email, phone }),
       });
 
       // 1) Đọc raw text (tránh json() trên body empty)
