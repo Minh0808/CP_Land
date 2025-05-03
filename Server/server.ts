@@ -53,7 +53,7 @@ const { FRONTEND_URL = '' } = process.env;
 app.use(cors({ origin: FRONTEND_URL }));
 
 // **Thêm route test để hiển thị server đang hoạt động:**
-app.get('/', (_req, res) => {
+app.get('/api/signup', (_req, res) => {
    res.send('✅ Server CP_Land đang hoạt động!');
  });
  
