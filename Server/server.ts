@@ -4,18 +4,22 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import * as mysql from 'mysql2/promise';
 import nodemailer from 'nodemailer';
+import http from 'http';
 
 dotenv.config();
 
 const {
    DB_HOST = '',
+   DB_PORT = '3306',    // ← thêm vào đây
    DB_USER = '',
    DB_PASS = '',
    DB_NAME = '',
    EMAIL_USER = '',
    EMAIL_PASS = '',
    ADMIN_EMAIL = '',
-} = process.env;
+   FRONTEND_URL = '',
+   PORT = '4000',
+ } = process.env;
 
 // Validate env
 if (!DB_HOST || !DB_USER || !DB_PASS || !DB_NAME) {
@@ -30,12 +34,14 @@ if (!EMAIL_USER || !EMAIL_PASS || !ADMIN_EMAIL) {
 // 1) Tạo connection pool MySQL
 const pool = mysql.createPool({
    host: DB_HOST,
+   port: Number(DB_PORT),        // ← dùng DB_PORT
    user: DB_USER,
    password: DB_PASS,
    database: DB_NAME,
    waitForConnections: true,
    connectionLimit: 10,
-});
+ });
+ 
 
 // 2) Tạo transporter gửi mail
 const transporter = nodemailer.createTransport({
@@ -49,7 +55,6 @@ const transporter = nodemailer.createTransport({
 const app = express();
 app.use(express.json());
 // 3) Middleware
-const { FRONTEND_URL = '' } = process.env;
 app.use(cors({ origin: FRONTEND_URL }));
 
 // **Thêm route test để hiển thị server đang hoạt động:**
@@ -137,6 +142,11 @@ app.get('/api/mail-check', async (_req, res) => {
    const message = err instanceof Error ? err.message : String(err);
     res.status(500).json({ message });
    }
+});
+
+const server = http.createServer(app);
+server.listen(Number(PORT), () => {
+  console.log(`Server running on port ${PORT}`);
 });
 
 export default app;
