@@ -62,11 +62,16 @@ app.get('/', (_req, res) => {
    res.send('✅ Server CP_Land đang hoạt động!');
 });
  
+// Khi GET vào /api/signup
+app.get('/api/signup', (_req, res) => {
+   res.send('✅ Signup sẵn sàng');
+});
+
  // (Tuỳ chọn) route ping dưới dạng JSON
 app.get('/api/ping', (_req, res) => {
    res.json({ ok: true, timestamp: new Date().toISOString() });
 });
- 
+
 type SignupBody = {
    email: string;
    phone: string;
@@ -96,6 +101,17 @@ app.post(
          [email, phone]
       );
 
+      const signupTime = new Date().toLocaleString('vi-VN', {
+         timeZone: 'Asia/Ho_Chi_Minh',
+         year: 'numeric',
+         month: '2-digit',
+         day: '2-digit',
+         hour: '2-digit',
+         minute: '2-digit',
+         second: '2-digit',
+         hour12: false
+       });
+
       // 4.2) Gửi mail cho admin
       await transporter.sendMail({
          from: `"CP Land Website" <${EMAIL_USER}>`,
@@ -105,7 +121,7 @@ app.post(
             <h3>Người dùng mới đăng ký:</h3>
             <p><strong>Email:</strong> ${email}</p>
             <p><strong>SĐT:</strong> ${phone}</p>
-            <p><em>Thời gian:</em> ${new Date().toLocaleString()}</p>
+            <p><em>Thời gian:</em> ${signupTime}</p>
          `,
       });
 
