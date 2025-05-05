@@ -10,7 +10,7 @@ dotenv.config();
 
 const {
    DB_HOST = '',
-   DB_PORT = '3306',    // ← thêm vào đây
+   DB_PORT = '14958',    // ← thêm vào đây
    DB_USER = '',
    DB_PASS = '',
    DB_NAME = '',
