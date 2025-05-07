@@ -32,7 +32,9 @@ const ModalSignUp: React.FC<Props> = ({ onClose }) => {
     }, CLOSE_DURATION);
   };
 
-  const API = import.meta.env.VITE_API_URL;
+  const API = import.meta.env.DEV
+    ? import.meta.env.VITE_API_URL_LOCAL
+    : import.meta.env.VITE_API_URL_SERVER
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -51,8 +53,7 @@ const ModalSignUp: React.FC<Props> = ({ onClose }) => {
          headers: { 'Content-Type': 'application/json' },
          body: JSON.stringify({ email, phone }),
       });
-
-      // 1) Đọc raw text (tránh json() trên body empty)
+``
       const text = await res.text();
       let data: { message?: string } = {};
       if (text) {

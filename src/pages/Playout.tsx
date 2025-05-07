@@ -21,8 +21,8 @@ const Playout: React.FC = () => {
             
             <Nav>
                <Link to = "/home" style={{ textDecoration: 'none' }}>TRANG CHỦ</Link>
-               <Link to ="/" style={{ textDecoration: 'none' }}>GIỚI THIỆU</Link>
-               <Link to ="" style={{ textDecoration: 'none' }}>DỰ ÁN</Link>
+               <Link to ="/slide" style={{ textDecoration: 'none' }}>GIỚI THIỆU</Link>
+               <Link to ="/panel" style={{ textDecoration: 'none' }}>DỰ ÁN</Link>
                <Link to ="" style={{ textDecoration: 'none' }}>TIN TỨC</Link>
                <Link to ="" style={{ textDecoration: 'none' }}>LIÊN HỆ</Link>
             </Nav>

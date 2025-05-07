@@ -61,7 +61,6 @@ export const Social = styled.div`
 export const Main = styled.main`
    flex: 1;
    overflow-y: auto;
-   padding: 20px;
    background: #f5f5f5;
 `
 export const Modal = styled.div`
