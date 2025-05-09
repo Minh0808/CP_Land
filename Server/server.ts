@@ -155,21 +155,33 @@ app.post('/api/signup',async (req: Request<{}, {}, SignupBody>,res: Response,nex
 });
 
 // Create HTTP server & Socket.IO
-const server = createServer(app);
-const io = new IOServer(server, {
-  cors: { origin: FRONTEND_URL, methods: ['GET','POST','PUT','DELETE'] }
-});
-app.locals.io = io;
+// const server = createServer(app);
+// const io = new IOServer(server, {
+//   cors: { origin: FRONTEND_URL, methods: ['GET','POST','PUT','DELETE'] }
+// });
+// app.locals.io = io;
 
 // Mount API routers
 app.use('/api/slides', slidesRouter);
 app.use('/api/panels', panelsRouter);
 app.use('/api/auth', authRouter);
 
-// --- Start listening ---
-server.listen(Number(PORT), () => {
-  console.log(`🚀 Server chạy tại http://localhost:${PORT}/`);
-});
+// ------ SOCKET.IO (chỉ cho local, không dùng trên Vercel) ------
+if (!isProd) {
+  // Tạo HTTP server và Socket.IO
+  const httpServer = createServer(app);
+  const io = new IOServer(httpServer, {
+    cors: { origin: FRONTEND_URL, methods: ['GET', 'POST', 'PUT', 'DELETE'] }
+  });
+  app.locals.io = io;
+
+  // Khởi server local
+  httpServer.listen(Number(PORT), () => {
+    console.log(`🚀 [Local] Server chạy tại http://localhost:${PORT}`);
+  });
+} else {
+  console.log('⚙️ Production mode – no local listener');
+}
 
 // --- Export server (not app) ---
-export default server;
+export default app;
