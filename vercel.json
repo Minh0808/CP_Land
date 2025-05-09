@@ -13,6 +13,7 @@
    ],
    "routes": [
      { "src": "/api/(.*)", "dest": "Server/server.ts" },
+     { "src": "/login", "dest": "Server/server.ts" },
  
      { "src": "/uploads/(.*)", "dest": "Server/server.ts" },
  

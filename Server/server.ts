@@ -162,7 +162,7 @@ app.post('/api/signup',async (req: Request<{}, {}, SignupBody>,res: Response,nex
 // Mount API routers
 app.use('/api/slides', slidesRouter);
 app.use('/api/panels', panelsRouter);
-app.use('/api/auth', authRouter);
+app.use('/', authRouter);
 
 // ------ SOCKET.IO (chỉ cho local, không dùng trên Vercel) ------
 if (!isProd) {
