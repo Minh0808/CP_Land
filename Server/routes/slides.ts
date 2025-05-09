@@ -18,7 +18,7 @@ function getIO(req: Request): IOServer {
 }
 
 // --- GET all slides ---
-router.get('/', async (_req, res) => {
+router.get('/slide', async (_req, res) => {
   try {
     const [rows] = await pool.query('SELECT * FROM slides ORDER BY sort_order');
     res.json(rows as any);
@@ -29,7 +29,7 @@ router.get('/', async (_req, res) => {
 });
 
 // --- POST create new slide ---
-router.post('/', upload.single('image'), async (req: Request, res: Response) => {
+router.post('/slide', upload.single('image'), async (req: Request, res: Response) => {
   if (!req.file) {
     res.status(400).json({ message: 'Vui lòng gửi kèm file ảnh.' });
     return;
@@ -91,7 +91,7 @@ router.post('/', upload.single('image'), async (req: Request, res: Response) => 
 });
 
 // --- PUT update slide ---
-router.put('/:id', upload.single('image'), async (req: Request<{id:string}>, res: Response) => {
+router.put('/slide/:id', upload.single('image'), async (req: Request<{id:string}>, res: Response) => {
   const { id } = req.params;
   const { title, price, details, sort_order } = req.body;
 
@@ -159,7 +159,7 @@ router.put('/:id', upload.single('image'), async (req: Request<{id:string}>, res
 });
 
 // --- DELETE slide + xóa file ---
-router.delete('/:id', async (req: Request<{id:string}>, res: Response) => {
+router.delete('/slide/:id', async (req: Request<{id:string}>, res: Response) => {
   const { id } = req.params;
 
   try {

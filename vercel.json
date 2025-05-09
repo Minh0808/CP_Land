@@ -12,13 +12,16 @@
      }
    ],
    "routes": [
-     { "src": "/api/(.*)", "dest": "Server/server.ts" },
-     { "src": "/login", "dest": "Server/server.ts" },
- 
-     { "src": "/uploads/(.*)", "dest": "Server/server.ts" },
- 
-     { "src": "/(.*)", "dest": "/index.html" }
-   ],
+    { "src": "^/login$",           "dest": "Server/server.ts" },
+    { "src": "^/signup$",          "dest": "Server/server.ts" },
+    { "src": "^/ping$",            "dest": "Server/server.ts" },
+    { "src": "^/db-check$",        "dest": "Server/server.ts" },
+    { "src": "^/mail-check$",      "dest": "Server/server.ts" },
+    { "src": "^/slides(?:/.*)?$",  "dest": "Server/server.ts" },
+    { "src": "^/panels(?:/.*)?$",  "dest": "Server/server.ts" },
+    { "src": "^/uploads/(.*)$",    "dest": "Server/server.ts" },
+    { "src": "/(.*)",              "dest": "/index.html" }
+  ],
    "functions": {
      "Server/server.ts": {
        "includeFiles": "Server/public/uploads/**"

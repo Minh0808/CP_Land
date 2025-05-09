@@ -18,7 +18,7 @@ function getIO(req: Request): IOServer {
 }
 
 // -- GET all panels
-router.get('/', async (_req, res: Response) => {
+router.get('/panels', async (_req, res: Response) => {
   try {
     const [rows] = await pool.query('SELECT * FROM panels ORDER BY sort_order');
     res.json(rows as any);
@@ -29,7 +29,7 @@ router.get('/', async (_req, res: Response) => {
 });
 
 // -- POST tạo mới panel
-router.post('/', upload.single('image'), async (req: Request, res: Response) => {
+router.post('/panels', upload.single('image'), async (req: Request, res: Response) => {
   if (!req.file) {
     res.status(400).json({ message: 'Vui lòng gửi kèm file ảnh.' });
     return;
@@ -81,7 +81,7 @@ router.post('/', upload.single('image'), async (req: Request, res: Response) => 
 });
 
 // -- PUT cập nhật panel
-router.put('/:id', upload.single('image'), async (req: Request<{id:string}>, res: Response) => {
+router.put('/panels/:id', upload.single('image'), async (req: Request<{id:string}>, res: Response) => {
   const { id } = req.params;
   const { sort_order } = req.body;
 
@@ -132,7 +132,7 @@ router.put('/:id', upload.single('image'), async (req: Request<{id:string}>, res
 });
 
 // -- DELETE panel + xóa file nếu không còn
-router.delete('/:id', async (req: Request<{id:string}>, res: Response) => {
+router.delete('/panels/:id', async (req: Request<{id:string}>, res: Response) => {
   const { id } = req.params;
 
   try {

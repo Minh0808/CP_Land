@@ -88,10 +88,10 @@ app.get('/', (_req, res) => {
   res.send('✅ Server CP_Land đang hoạt động!');
 });
 
-app.get('/api/ping', (_req, res) => {
+app.get('/ping', (_req, res) => {
   res.json({ ok: true, timestamp: new Date().toISOString() });
 });
-app.get('/api/db-check', async (_req, res) => {
+app.get('/db-check', async (_req, res) => {
   try {
     const [rows] = await pool.query('SELECT 1+1 AS result');
     res.json({ ok: true, result: rows });
@@ -100,7 +100,7 @@ app.get('/api/db-check', async (_req, res) => {
     res.status(500).json({ message: msg });
   }
 });
-app.get('/api/mail-check', async (_req, res) => {
+app.get('/mail-check', async (_req, res) => {
   try {
     await transporter.verify();
     res.json({ ok: true, mail: 'SMTP server reachable' });
@@ -112,11 +112,11 @@ app.get('/api/mail-check', async (_req, res) => {
 
 // --- Signup endpoint ---
 type SignupBody = { email: string; phone: string };
-app.get('/api/signup', (_req, res) => {
+app.get('/signup', (_req, res) => {
   res.send('✅ Signup sẵn sàng!');
 });
 
-app.post('/api/signup',async (req: Request<{}, {}, SignupBody>,res: Response,next: NextFunction): Promise<void> => {
+app.post('/signup',async (req: Request<{}, {}, SignupBody>,res: Response,next: NextFunction): Promise<void> => {
   const { email, phone } = req.body;
   if (!email || !phone) {
    res.status(400).json({ message: 'Thiếu email hoặc số điện thoại.' });
@@ -160,8 +160,8 @@ app.post('/api/signup',async (req: Request<{}, {}, SignupBody>,res: Response,nex
 });
 
 // Mount API routers
-app.use('/api/slides', slidesRouter);
-app.use('/api/panels', panelsRouter);
+app.use('/', slidesRouter);
+app.use('/', panelsRouter);
 app.use('/', authRouter);
 
 // ------ SOCKET.IO (chỉ cho local, không dùng trên Vercel) ------
