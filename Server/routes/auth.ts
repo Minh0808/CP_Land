@@ -8,7 +8,7 @@ const router = Router();
 
 // POST /api/auth/login
 router.post(
-  '/login',
+  '/',
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const { email, password } = req.body;
@@ -66,7 +66,7 @@ router.post(
 
 // GET /api/auth/me
 router.get(
-  '/me',
+  '/',
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const authHeader = req.headers.authorization;

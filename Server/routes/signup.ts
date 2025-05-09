@@ -7,11 +7,11 @@ type SignupBody = { email: string; phone: string }
 const router = Router()
 
 // GET /signup
-router.get('/signup', (_req, res) => {
+router.get('/', (_req, res) => {
   res.send('✅ Signup sẵn sàng!')
 })
 // POST /signup
-router.post('/signup', async (req: Request, res: Response) => {
+router.post('/', async (req: Request, res: Response) => {
     // Ép kiểu body ngay trong handler
     const { email, phone } = req.body as SignupBody
   

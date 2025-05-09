@@ -38,7 +38,7 @@ const Playout: React.FC = () => {
 
   // Khi component mount, load profile
   useEffect(() => {
-    axios.get<{ authenticated: boolean; user?: User }>('/api/auth/me')
+    axios.get<{ authenticated: boolean; user?: User }>('/api/auth')
       .then(res => {
         if (res.data.authenticated && res.data.user) {
           setUser(res.data.user)

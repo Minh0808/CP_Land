@@ -9,11 +9,6 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:4000',
         changeOrigin: true
-      },
-      // redirect socket.io websocket traffic
-      '/socket.io': {
-        target: 'ws://localhost:4000',
-        ws: true
       }
     }
   }

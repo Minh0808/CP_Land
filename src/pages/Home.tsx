@@ -1,7 +1,6 @@
 // src/pages/Home.tsx
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { io } from 'socket.io-client'
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 
 import {
@@ -21,7 +20,6 @@ import {
   Span,
   Text,
   TitleText,
-  NavButton
 } from '../Style/HomeStyle'
 
 interface PanelData {
@@ -39,12 +37,12 @@ interface SlideData {
   sort_order: number
 }
 
+// Nếu dùng proxy của Vite, axios sẽ tự chuyển '/api/...' → backend
+// Ngược lại có thể thay thành `${API_BASE}/api/...`
 const isProd = import.meta.env.MODE === 'production'
 const API_BASE = isProd
   ? (import.meta.env.VITE_API_URL_SERVER as string)
   : (import.meta.env.VITE_API_URL_LOCAL as string)
-
-const socket = io('/', { transports: ['websocket'] })
 
 const Home: React.FC = () => {
   // panels
@@ -55,82 +53,44 @@ const Home: React.FC = () => {
   const [slides, setSlides] = useState<SlideData[]>([])
   const [slideIndex, setSlideIndex] = useState(0)
 
-  // --- panels: fetch + realtime ---
+  // Fetch panels chỉ 1 lần
   useEffect(() => {
     axios.get<PanelData[]>('/api/panels')
-      .then(r => {
-        setPanels(r.data)
+      .then(res => {
+        setPanels(res.data.sort((a, b) => a.sort_order - b.sort_order))
         setPanelIndex(0)
       })
       .catch(console.error)
-
-    socket.on('panel:added', p =>
-      setPanels(prev => [...prev, p].sort((a, b) => a.sort_order - b.sort_order))
-    )
-    socket.on('panel:updated', upd =>
-      setPanels(prev =>
-        prev
-          .map(p => p.id === upd.id ? upd : p)
-          .sort((a, b) => a.sort_order - b.sort_order)
-      )
-    )
-    socket.on('panel:deleted', ({ id }: { id: number }) =>
-      setPanels(prev => prev.filter(p => p.id !== id))
-    )
-
-    return () => {
-      socket.off('panel:added')
-      socket.off('panel:updated')
-      socket.off('panel:deleted')
-    }
   }, [])
 
-  // Auto‑play panels every 5s
+  // Tự động chuyển panels mỗi 5s
   useEffect(() => {
     if (!panels.length) return
-    const id = setInterval(() => {
-      setPanelIndex(i => i < panels.length - 1 ? i + 1 : 0)
+    const iv = setInterval(() => {
+      setPanelIndex(i => (i < panels.length - 1 ? i + 1 : 0))
     }, 5000)
-    return () => clearInterval(id)
+    return () => clearInterval(iv)
   }, [panels.length])
 
-  // --- slides: fetch + realtime ---
+  // Fetch slides chỉ 1 lần
   useEffect(() => {
     axios.get<SlideData[]>('/api/slides')
-      .then(r => {
-        setSlides(r.data)
+      .then(res => {
+        setSlides(res.data.sort((a, b) => a.sort_order - b.sort_order))
         setSlideIndex(0)
       })
       .catch(console.error)
-
-    socket.on('slide:added', s =>
-      setSlides(prev => [...prev, s].sort((a, b) => a.sort_order - b.sort_order))
-    )
-    socket.on('slide:updated', upd =>
-      setSlides(prev =>
-        prev
-          .map(s => s.id === upd.id ? upd : s)
-          .sort((a, b) => a.sort_order - b.sort_order)
-      )
-    )
-    socket.on('slide:deleted', ({ id }: { id: number }) =>
-      setSlides(prev => prev.filter(s => s.id !== id))
-    )
-
-    return () => {
-      socket.off('slide:added')
-      socket.off('slide:updated')
-      socket.off('slide:deleted')
-    }
   }, [])
 
   const prevPanel = () => setPanelIndex(i => Math.max(i - 1, 0))
   const nextPanel = () => setPanelIndex(i => Math.min(i + 1, panels.length - 1))
 
-  const visibleCount = 4;  
-  const pageCount = Math.ceil(slides.length / visibleCount);
-  const prevSlide = () => setSlideIndex(i => (i - 1 + pageCount) % pageCount);
-  const nextSlide = () => setSlideIndex(i => (i + 1) % pageCount);
+  // Carousel slides dạng pages
+  const visibleCount = 4
+  const pageCount = Math.ceil(slides.length / visibleCount)
+  const prevSlide = () => setSlideIndex(i => (i - 1 + pageCount) % pageCount)
+  const nextSlide = () => setSlideIndex(i => (i + 1) % pageCount)
+
   return (
     <Background>
       <SliderWrapper>
@@ -144,12 +104,8 @@ const Home: React.FC = () => {
             />
           ))}
         </Slides>
-        <PrevButton onClick={prevPanel}>
-          <FaChevronLeft />
-        </PrevButton>
-        <NextButton onClick={nextPanel}>
-          <FaChevronRight />
-        </NextButton>
+        <PrevButton onClick={prevPanel}><FaChevronLeft/></PrevButton>
+        <NextButton onClick={nextPanel}><FaChevronRight/></NextButton>
         <Dots>
           {panels.map((_, idx) => (
             <Dot
@@ -160,23 +116,24 @@ const Home: React.FC = () => {
           ))}
         </Dots>
       </SliderWrapper>
+
       <Title>DỰ ÁN ĐANG MỞ BÁN</Title>
       <CardCarousel>
         <CardSlider $index={slideIndex}>
           {slides.map(s => (
             <Card key={s.id}>
-              <ImageBox $url={s.image_url.startsWith('http') ? s.image_url : `${API_BASE}${s.image_url}`} />
+              <ImageBox
+                $url={s.image_url.startsWith('http')
+                  ? s.image_url
+                  : `${API_BASE}${s.image_url}`}
+              />
               <TitleText>{s.title}</TitleText>
               <Text>Giá từ: <Span>{s.price}</Span></Text>
             </Card>
           ))}
         </CardSlider>
-        <PrevButton onClick={prevSlide}>
-          <FaChevronLeft />
-        </PrevButton>
-        <NextButton onClick={nextSlide}>
-          <FaChevronRight />
-        </NextButton>
+        <PrevButton onClick={prevSlide}><FaChevronLeft/></PrevButton>
+        <NextButton onClick={nextSlide}><FaChevronRight/></NextButton>
       </CardCarousel>
     </Background>
   )

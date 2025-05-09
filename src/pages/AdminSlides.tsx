@@ -1,7 +1,6 @@
 // src/pages/AdminSlides.tsx
 import React, { useEffect, useState, ChangeEvent } from 'react';
 import axios from 'axios';
-import { io, Socket } from 'socket.io-client';
 import styled from 'styled-components';
 
 interface Slide {
@@ -13,60 +12,26 @@ interface Slide {
   sort_order: number;
 }
 
-// 1) Kiểm tra môi trường
 const isProd = import.meta.env.MODE === 'production';
-
-// 2) Lấy base URL backend
 const API_LOCAL = import.meta.env.VITE_API_URL_LOCAL as string;
 const API_SERVER = import.meta.env.VITE_API_URL_SERVER as string;
 const API_BASE = isProd ? API_SERVER : API_LOCAL;
-
-// 3) Kết nối Socket.IO
-const socket: Socket = io(API_BASE, { transports: ['websocket'] });
 
 const AdminSlides: React.FC = () => {
   const [slides, setSlides] = useState<Slide[]>([]);
   const [editing, setEditing] = useState<Partial<Slide> | null>(null);
   const [file, setFile] = useState<File | null>(null);
 
-  // 4) Load data & subscribe realtime
+  // 1) Fetch initial slides
   useEffect(() => {
-    // initial fetch
     axios.get<Slide[]>(`${API_BASE}/api/slides`)
-      .then(res => setSlides(res.data))
+      .then(res => {
+        setSlides(res.data.sort((a, b) => a.sort_order - b.sort_order));
+      })
       .catch(err => console.error('Lỗi fetch slides:', err));
-
-    // realtime handlers
-    socket.on('slide:added', onAdded);
-    socket.on('slide:updated', onUpdated);
-    socket.on('slide:deleted', onDeleted);
-
-    return () => {
-      socket.off('slide:added', onAdded);
-      socket.off('slide:updated', onUpdated);
-      socket.off('slide:deleted', onDeleted);
-    };
   }, []);
 
-  const onAdded = (s: Slide) => {
-    setSlides(prev =>
-      [...prev, s].sort((a, b) => a.sort_order - b.sort_order)
-    );
-  };
-
-  const onUpdated = (upd: Slide) => {
-    setSlides(prev =>
-      prev
-        .map(s => (s.id === upd.id ? upd : s))
-        .sort((a, b) => a.sort_order - b.sort_order)
-    );
-  };
-
-  const onDeleted = ({ id }: { id: number }) => {
-    setSlides(prev => prev.filter(s => s.id !== id));
-  };
-
-  // handlers
+  // 2) Handlers
   const handleEdit = (s: Slide) => {
     setEditing(s);
     setFile(null);
@@ -76,8 +41,10 @@ const AdminSlides: React.FC = () => {
     if (!window.confirm('Xác nhận xóa slide này?')) return;
     try {
       await axios.delete(`${API_BASE}/api/slides/${id}`);
+      // sau khi xóa, fetch lại danh sách
+      const { data } = await axios.get<Slide[]>(`${API_BASE}/api/slides`);
+      setSlides(data.sort((a, b) => a.sort_order - b.sort_order));
       setEditing(null);
-      // UI sẽ cập nhật qua socket.emit('slide:deleted')
     } catch (err) {
       console.error('Lỗi xóa slide:', err);
     }
@@ -85,7 +52,8 @@ const AdminSlides: React.FC = () => {
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (!editing) return;
-    setEditing({ ...editing, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setEditing({ ...editing, [name]: name === 'sort_order' ? Number(value) : value });
   };
 
   const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
@@ -95,8 +63,8 @@ const AdminSlides: React.FC = () => {
   const handleSave = async () => {
     if (!editing) return;
     const form = new FormData();
-    if (editing.title)  form.append('title', editing.title);
-    if (editing.price)  form.append('price', editing.price);
+    if (editing.title)   form.append('title', editing.title);
+    if (editing.price)   form.append('price', editing.price);
     if (editing.details) form.append('details', editing.details);
     form.append('sort_order', (editing.sort_order ?? 0).toString());
     if (file) form.append('image', file);
@@ -115,8 +83,10 @@ const AdminSlides: React.FC = () => {
           { headers: { 'Content-Type': 'multipart/form-data' } }
         );
       }
+      // sau khi thêm/sửa, fetch lại danh sách
+      const { data } = await axios.get<Slide[]>(`${API_BASE}/api/slides`);
+      setSlides(data.sort((a, b) => a.sort_order - b.sort_order));
       setEditing(null);
-      // UI sẽ cập nhật qua socket.emit('slide:added'/'slide:updated')
     } catch (err) {
       console.error('Lỗi lưu slide:', err);
     }
@@ -133,7 +103,9 @@ const AdminSlides: React.FC = () => {
         {slides.map(s => (
           <Item key={s.id}>
             <img
-              src={s.image_url.startsWith('http') ? s.image_url : `${API_BASE}${s.image_url}`}
+              src={s.image_url.startsWith('http')
+                ? s.image_url
+                : `${API_BASE}${s.image_url}`}
               alt={s.title}
               width={120}
             />
@@ -155,11 +127,19 @@ const AdminSlides: React.FC = () => {
           <Form>
             <label>
               Tiêu đề
-              <input name="title" value={editing.title} onChange={handleChange} />
+              <input
+                name="title"
+                value={editing.title ?? ''}
+                onChange={handleChange}
+              />
             </label>
             <label>
               Giá
-              <input name="price" value={editing.price} onChange={handleChange} />
+              <input
+                name="price"
+                value={editing.price ?? ''}
+                onChange={handleChange}
+              />
             </label>
             <label>
               Ảnh
@@ -170,7 +150,7 @@ const AdminSlides: React.FC = () => {
               <input
                 type="number"
                 name="sort_order"
-                value={editing.sort_order}
+                value={editing.sort_order ?? 0}
                 onChange={handleChange}
               />
             </label>

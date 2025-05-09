@@ -37,10 +37,10 @@ app.use(
 
 app.use('/uploads', express.static(path.resolve(__dirname, 'public', 'uploads')))
 
-app.use('/', signupRouter)
-app.use('/', authRouter)
-app.use('/', panelsRouter)
-app.use('/', slidesRouter)
+app.use('/api/signup', signupRouter)
+app.use('/api/auth',   authRouter)
+app.use('/api/panels', panelsRouter)
+app.use('/api/slides', slidesRouter)
 
 app.get('/', (_req, res) => {
   res.send('✅ API CP_Land đang hoạt động!')

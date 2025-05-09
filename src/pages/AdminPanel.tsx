@@ -1,7 +1,6 @@
 // src/pages/AdminPanel.tsx
 import React, { useEffect, useState, ChangeEvent } from 'react';
 import axios from 'axios';
-import { io, Socket } from 'socket.io-client';
 import styled from 'styled-components';
 
 interface Panel {
@@ -10,52 +9,30 @@ interface Panel {
   sort_order: number;
 }
 
-// 1) Kiểm tra môi trường
 const isProd = import.meta.env.MODE === 'production';
-
-// 2) Lấy base URL backend
 const API_LOCAL = import.meta.env.VITE_API_URL_LOCAL as string;
 const API_SERVER = import.meta.env.VITE_API_URL_SERVER as string;
 const API_BASE = isProd ? API_SERVER : API_LOCAL;
-
-// 3) Kết nối Socket.IO
-const socket: Socket = io(API_BASE, { transports: ['websocket'] });
 
 const AdminPanel: React.FC = () => {
   const [panels, setPanels] = useState<Panel[]>([]);
   const [editing, setEditing] = useState<Partial<Panel> | null>(null);
   const [file, setFile] = useState<File | null>(null);
 
-  // 4) Load data & subscribe events
-  useEffect(() => {
-    // initial fetch
+  // 1) Fetch initial panels
+  const loadPanels = () => {
     axios.get<Panel[]>(`${API_BASE}/api/panels`)
-      .then(res => setPanels(res.data))
+      .then(res => {
+        setPanels(res.data.sort((a, b) => a.sort_order - b.sort_order));
+      })
       .catch(err => console.error('Lỗi fetch panels:', err));
+  };
 
-    // realtime
-    socket.on('panel:added', p =>
-      setPanels(prev => [...prev, p].sort((a, b) => a.sort_order - b.sort_order))
-    );
-    socket.on('panel:updated', upd =>
-      setPanels(prev =>
-        prev
-          .map(p => (p.id === upd.id ? upd : p))
-          .sort((a, b) => a.sort_order - b.sort_order)
-      )
-    );
-    socket.on('panel:deleted', ({ id }: { id: number }) =>
-      setPanels(prev => prev.filter(p => p.id !== id))
-    );
-
-    return () => {
-      socket.off('panel:added');
-      socket.off('panel:updated');
-      socket.off('panel:deleted');
-    };
+  useEffect(() => {
+    loadPanels();
   }, []);
 
-  // 5) Handlers
+  // 2) Handlers
   const handleEdit = (p: Panel) => {
     setEditing(p);
     setFile(null);
@@ -66,7 +43,7 @@ const AdminPanel: React.FC = () => {
     try {
       await axios.delete(`${API_BASE}/api/panels/${id}`);
       setEditing(null);
-      // state sẽ update khi socket nhận 'panel:deleted'
+      loadPanels();
     } catch (err) {
       console.error('Lỗi xóa panel:', err);
     }
@@ -74,7 +51,8 @@ const AdminPanel: React.FC = () => {
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (!editing) return;
-    setEditing({ ...editing, [e.target.name]: Number(e.target.value) });
+    const { name, value } = e.target;
+    setEditing({ ...editing, [name]: Number(value) });
   };
 
   const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
@@ -94,22 +72,21 @@ const AdminPanel: React.FC = () => {
           form,
           { headers: { 'Content-Type': 'multipart/form-data' } }
         );
-        // state sẽ update khi socket nhận 'panel:updated'
       } else {
         await axios.post(
           `${API_BASE}/api/panels`,
           form,
           { headers: { 'Content-Type': 'multipart/form-data' } }
         );
-        // state sẽ update khi socket nhận 'panel:added'
       }
       setEditing(null);
+      loadPanels();
     } catch (err) {
       console.error('Lỗi lưu panel:', err);
     }
   };
 
-  // 6) Render UI
+  // 3) Render UI
   return (
     <Container>
       <h1>Quản lý Panels</h1>
@@ -147,7 +124,7 @@ const AdminPanel: React.FC = () => {
               <input
                 type="number"
                 name="sort_order"
-                value={editing.sort_order}
+                value={editing.sort_order ?? 0}
                 onChange={handleChange}
               />
             </label>

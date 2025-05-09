@@ -5,20 +5,12 @@ import path from 'path';
 import fs from 'fs/promises';
 import crypto from 'crypto';
 import { pool } from '../config/db';
-import { Server as IOServer } from 'socket.io';
 
 const router = Router();
-
-// 1) Dùng memoryStorage để lấy buffer ảnh
 const upload = multer({ storage: multer.memoryStorage() });
 
-// 2) Helper lấy Socket.IO từ app.locals
-function getIO(req: Request): IOServer {
-  return req.app.locals.io as IOServer;
-}
-
 // --- GET all slides ---
-router.get('/slide', async (_req, res) => {
+router.get('/', async (_req: Request, res: Response) => {
   try {
     const [rows] = await pool.query('SELECT * FROM slides ORDER BY sort_order');
     res.json(rows as any);
@@ -29,24 +21,23 @@ router.get('/slide', async (_req, res) => {
 });
 
 // --- POST create new slide ---
-router.post('/slide', upload.single('image'), async (req: Request, res: Response) => {
+router.post('/', upload.single('image'), async (req: Request, res: Response) => {
   if (!req.file) {
     res.status(400).json({ message: 'Vui lòng gửi kèm file ảnh.' });
     return;
   }
 
   try {
-    // 1. Hash buffer + xác định tên file
+    // 1) Hash buffer + định danh file
     const hash = crypto.createHash('sha256').update(req.file.buffer).digest('hex');
     const ext = path.extname(req.file.originalname).toLowerCase();
     const filename = `${hash}${ext}`;
 
-    // 2. Đường dẫn thư mục & file
+    // 2) Tạo đường dẫn lưu ảnh
     const uploadDir = path.resolve(__dirname, '../public', 'uploads');
     const absPath = path.join(uploadDir, filename);
     const imageUrl = `/uploads/${filename}`;
 
-    // 3. Tạo folder nếu chưa có, và ghi file nếu chưa tồn tại
     await fs.mkdir(uploadDir, { recursive: true });
     try {
       await fs.access(absPath);
@@ -54,13 +45,13 @@ router.post('/slide', upload.single('image'), async (req: Request, res: Response
       await fs.writeFile(absPath, req.file.buffer);
     }
 
-    // 4. Tự tính sort_order mới
+    // 3) Tính sort_order mới
     const [[{ maxOrder }]]: any = await pool.query(
       'SELECT MAX(sort_order) AS maxOrder FROM slides'
     );
     const sort_order = (maxOrder ?? 0) + 1;
 
-    // 5. Insert vào DB
+    // 4) Insert vào DB
     const { title, price, details } = req.body;
     const [result]: any = await pool.query(
       `INSERT INTO slides
@@ -78,10 +69,7 @@ router.post('/slide', upload.single('image'), async (req: Request, res: Response
       sort_order,
     };
 
-    // 6. Emit real-time
-    getIO(req).emit('slide:added', newSlide);
-
-    res.json(newSlide);
+    res.status(201).json(newSlide);
     return;
   } catch (err) {
     console.error('POST slides error:', err);
@@ -91,19 +79,19 @@ router.post('/slide', upload.single('image'), async (req: Request, res: Response
 });
 
 // --- PUT update slide ---
-router.put('/slide/:id', upload.single('image'), async (req: Request<{id:string}>, res: Response) => {
+router.put('/:id', upload.single('image'), async (req: Request<{id:string}>, res: Response) => {
   const { id } = req.params;
   const { title, price, details, sort_order } = req.body;
 
   try {
-    // 1. Lấy image_url cũ
+    // 1) Lấy image_url cũ
     const [[orig]]: any = await pool.query(
       'SELECT image_url FROM slides WHERE id = ?',
       [id]
     );
     let imageUrl = orig?.image_url;
 
-    // 2. Nếu có ảnh mới, xử lý tương tự POST
+    // 2) Nếu có file mới, lưu giống POST
     if (req.file) {
       const hash = crypto.createHash('sha256').update(req.file.buffer).digest('hex');
       const ext = path.extname(req.file.originalname).toLowerCase();
@@ -121,7 +109,7 @@ router.put('/slide/:id', upload.single('image'), async (req: Request<{id:string}
       }
     }
 
-    // 3. Cập nhật DB
+    // 3) Cập nhật DB
     await pool.query(
       `UPDATE slides
          SET image_url = ?, title = ?, price = ?, details = ?, sort_order = ?
@@ -129,7 +117,7 @@ router.put('/slide/:id', upload.single('image'), async (req: Request<{id:string}
       [imageUrl, title, price, details, sort_order ?? 0, id]
     );
 
-    // 4. Nếu có file mới, xóa file cũ
+    // 4) Nếu có file mới, xóa ảnh cũ
     if (req.file && orig?.image_url) {
       const publicDir = path.resolve(__dirname, '../public');
       const rel = orig.image_url.replace(/^\/+/, '');
@@ -146,9 +134,6 @@ router.put('/slide/:id', upload.single('image'), async (req: Request<{id:string}
       sort_order: Number(sort_order) || 0,
     };
 
-    // 5. Emit real-time
-    getIO(req).emit('slide:updated', updated);
-
     res.json(updated);
     return;
   } catch (err) {
@@ -159,29 +144,26 @@ router.put('/slide/:id', upload.single('image'), async (req: Request<{id:string}
 });
 
 // --- DELETE slide + xóa file ---
-router.delete('/slide/:id', async (req: Request<{id:string}>, res: Response) => {
+router.delete('/:id', async (req: Request<{id:string}>, res: Response) => {
   const { id } = req.params;
 
   try {
-    // 1. Lấy image_url cũ
+    // 1) Lấy image_url
     const [[row]]: any = await pool.query(
       'SELECT image_url FROM slides WHERE id = ?',
       [id]
     );
 
-    // 2. Xóa record
+    // 2) Xóa record
     await pool.query('DELETE FROM slides WHERE id = ?', [id]);
 
-    // 3. Xóa file ảnh (nếu tồn tại)
+    // 3) Xóa file ảnh nếu có
     if (row?.image_url) {
       const publicDir = path.resolve(__dirname, '../public');
       const rel = row.image_url.replace(/^\/+/, '');
       const abs = path.join(publicDir, rel);
       await fs.unlink(abs).catch(() => {});
     }
-
-    // 4. Emit real-time
-    getIO(req).emit('slide:deleted', { id: Number(id) });
 
     res.json({ id: Number(id) });
     return;

@@ -40,7 +40,7 @@ const Login: React.FC = () => {
       // gọi POST /api/auth/login
       const res = await axios.post<{
         token: string
-      }>('/api/auth/login', { email, password })
+      }>('/api/auth', { email, password })
 
       const { token } = res.data
 
@@ -51,7 +51,7 @@ const Login: React.FC = () => {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
 
       // 3) Điều hướng về trang chủ
-      navigate('/')
+      navigate('/home')
     } catch (err: any) {
       console.error(err)
       setError(

@@ -5,20 +5,12 @@ import path from 'path';
 import fs from 'fs/promises';
 import crypto from 'crypto';
 import { pool } from '../config/db';
-import { Server as IOServer } from 'socket.io';
 
 const router = Router();
-
-// 1) memoryStorage để lấy buffer
 const upload = multer({ storage: multer.memoryStorage() });
 
-// helper lấy io
-function getIO(req: Request): IOServer {
-  return req.app.locals.io as IOServer;
-}
-
-// -- GET all panels
-router.get('/panels', async (_req, res: Response) => {
+// GET all panels
+router.get('/', async (_req, res: Response) => {
   try {
     const [rows] = await pool.query('SELECT * FROM panels ORDER BY sort_order');
     res.json(rows as any);
@@ -28,15 +20,15 @@ router.get('/panels', async (_req, res: Response) => {
   }
 });
 
-// -- POST tạo mới panel
-router.post('/panels', upload.single('image'), async (req: Request, res: Response) => {
+// POST tạo mới panel
+router.post('/', upload.single('image'), async (req: Request, res: Response) => {
   if (!req.file) {
     res.status(400).json({ message: 'Vui lòng gửi kèm file ảnh.' });
     return;
   }
 
   try {
-    // tính hash + tên file
+    // Tính hash + tên file
     const hash = crypto.createHash('sha256').update(req.file.buffer).digest('hex');
     const ext = path.extname(req.file.originalname).toLowerCase();
     const filename = `${hash}${ext}`;
@@ -45,33 +37,27 @@ router.post('/panels', upload.single('image'), async (req: Request, res: Respons
     const absPath = path.join(uploadDir, filename);
     const imageUrl = `/uploads/${filename}`;
 
-    // nếu thư mục chưa có, tạo
     await fs.mkdir(uploadDir, { recursive: true });
-
-    // ghi file nếu chưa có
     try {
       await fs.access(absPath);
     } catch {
       await fs.writeFile(absPath, req.file.buffer);
     }
 
-    // tìm sort_order mới
+    // Tìm sort_order mới
     const [[{ maxOrder }]]: any = await pool.query(
       'SELECT MAX(sort_order) AS maxOrder FROM panels'
     );
     const sort_order = (maxOrder ?? 0) + 1;
 
-    // insert
+    // Insert vào DB
     const [result]: any = await pool.query(
       'INSERT INTO panels (image_url, sort_order) VALUES (?, ?)',
       [imageUrl, sort_order]
     );
     const newPanel = { id: result.insertId, image_url: imageUrl, sort_order };
 
-    // emit
-    getIO(req).emit('panel:added', newPanel);
-
-    res.json(newPanel);
+    res.status(201).json(newPanel);
     return;
   } catch (err) {
     console.error('POST panels error:', err);
@@ -80,20 +66,20 @@ router.post('/panels', upload.single('image'), async (req: Request, res: Respons
   }
 });
 
-// -- PUT cập nhật panel
-router.put('/panels/:id', upload.single('image'), async (req: Request<{id:string}>, res: Response) => {
+// PUT cập nhật panel
+router.put('/:id', upload.single('image'), async (req: Request<{id:string}>, res: Response) => {
   const { id } = req.params;
   const { sort_order } = req.body;
 
   try {
-    // 1) Lấy image_url cũ
+    // Lấy image_url cũ
     const [[orig]]: any = await pool.query(
       'SELECT image_url FROM panels WHERE id = ?',
       [id]
     );
     let imageUrl: string = orig?.image_url;
 
-    // 2) Nếu có file mới, xử lý tương tự POST
+    // Nếu có file mới, xử lý tương tự POST
     if (req.file) {
       const hash = crypto.createHash('sha256').update(req.file.buffer).digest('hex');
       const ext = path.extname(req.file.originalname).toLowerCase();
@@ -111,17 +97,13 @@ router.put('/panels/:id', upload.single('image'), async (req: Request<{id:string
       }
     }
 
-    // 3) Update DB
+    // Update DB
     await pool.query(
       'UPDATE panels SET image_url = ?, sort_order = ? WHERE id = ?',
       [imageUrl, sort_order, id]
     );
 
     const updated = { id: Number(id), image_url: imageUrl, sort_order: Number(sort_order) };
-
-    // emit
-    getIO(req).emit('panel:updated', updated);
-
     res.json(updated);
     return;
   } catch (err) {
@@ -131,21 +113,21 @@ router.put('/panels/:id', upload.single('image'), async (req: Request<{id:string
   }
 });
 
-// -- DELETE panel + xóa file nếu không còn
-router.delete('/panels/:id', async (req: Request<{id:string}>, res: Response) => {
+// DELETE panel + xóa file nếu không còn
+router.delete('/:id', async (req: Request<{id:string}>, res: Response) => {
   const { id } = req.params;
 
   try {
-    // 1) Lấy image_url
+    // Lấy image_url
     const [[row]]: any = await pool.query(
       'SELECT image_url FROM panels WHERE id = ?',
       [id]
     );
 
-    // 2) Xoá bản ghi
+    // Xóa bản ghi
     await pool.query('DELETE FROM panels WHERE id = ?', [id]);
 
-    // 3) Nếu file này không còn ai dùng, xóa khỏi disk
+    // Xóa file nếu không còn ai dùng
     if (row?.image_url) {
       const [[countRow]]: any = await pool.query(
         'SELECT COUNT(*) AS cnt FROM panels WHERE image_url = ?',
@@ -158,9 +140,6 @@ router.delete('/panels/:id', async (req: Request<{id:string}>, res: Response) =>
         await fs.unlink(abs).catch(() => {});
       }
     }
-
-    // 4) Emit
-    getIO(req).emit('panel:deleted', { id: Number(id) });
 
     res.json({ id: Number(id) });
     return;
