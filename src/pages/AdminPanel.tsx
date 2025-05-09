@@ -1,6 +1,7 @@
 // src/pages/AdminPanel.tsx
-import React, { useEffect, useState, ChangeEvent, FormEvent } from 'react';
+import React, { useEffect, useState, ChangeEvent } from 'react';
 import axios from 'axios';
+import { io, Socket } from 'socket.io-client';
 import styled from 'styled-components';
 
 interface Panel {
@@ -9,96 +10,154 @@ interface Panel {
   sort_order: number;
 }
 
+// 1) Kiểm tra môi trường
+const isProd = import.meta.env.MODE === 'production';
+
+// 2) Lấy base URL backend
+const API_LOCAL = import.meta.env.VITE_API_URL_LOCAL as string;
+const API_SERVER = import.meta.env.VITE_API_URL_SERVER as string;
+const API_BASE = isProd ? API_SERVER : API_LOCAL;
+
+// 3) Kết nối Socket.IO
+const socket: Socket = io(API_BASE, { transports: ['websocket'] });
+
 const AdminPanel: React.FC = () => {
-  const [file, setFile] = useState<File | null>(null);
   const [panels, setPanels] = useState<Panel[]>([]);
-  const [uploading, setUploading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [editing, setEditing] = useState<Partial<Panel> | null>(null);
+  const [file, setFile] = useState<File | null>(null);
 
-  // Lấy base URL từ env hoặc fallback về origin
-  const API_BASE = (import.meta.env.VITE_API_BASE_URL as string) || window.location.origin;
-
+  // 4) Load data & subscribe events
   useEffect(() => {
-    fetchPanels();
+    // initial fetch
+    axios.get<Panel[]>(`${API_BASE}/api/panels`)
+      .then(res => setPanels(res.data))
+      .catch(err => console.error('Lỗi fetch panels:', err));
+
+    // realtime
+    socket.on('panel:added', p =>
+      setPanels(prev => [...prev, p].sort((a, b) => a.sort_order - b.sort_order))
+    );
+    socket.on('panel:updated', upd =>
+      setPanels(prev =>
+        prev
+          .map(p => (p.id === upd.id ? upd : p))
+          .sort((a, b) => a.sort_order - b.sort_order)
+      )
+    );
+    socket.on('panel:deleted', ({ id }: { id: number }) =>
+      setPanels(prev => prev.filter(p => p.id !== id))
+    );
+
+    return () => {
+      socket.off('panel:added');
+      socket.off('panel:updated');
+      socket.off('panel:deleted');
+    };
   }, []);
 
-  const fetchPanels = async () => {
+  // 5) Handlers
+  const handleEdit = (p: Panel) => {
+    setEditing(p);
+    setFile(null);
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!window.confirm('Xác nhận xóa panel này?')) return;
     try {
-      const { data } = await axios.get<Panel[]>(`${API_BASE}/api/panels`);
-      setPanels(data);
-    } catch (err: any) {
-      console.error(err);
-      setError('Không tải được panels.');
+      await axios.delete(`${API_BASE}/api/panels/${id}`);
+      setEditing(null);
+      // state sẽ update khi socket nhận 'panel:deleted'
+    } catch (err) {
+      console.error('Lỗi xóa panel:', err);
     }
   };
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setError(null);
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!editing) return;
+    setEditing({ ...editing, [e.target.name]: Number(e.target.value) });
+  };
+
+  const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
     setFile(e.target.files?.[0] ?? null);
   };
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!file) {
-      setError('Vui lòng chọn ảnh trước khi upload.');
-      return;
-    }
-
-    setUploading(true);
-    setError(null);
+  const handleSave = async () => {
+    if (!editing) return;
+    const form = new FormData();
+    form.append('sort_order', String(editing.sort_order ?? 0));
+    if (file) form.append('image', file);
 
     try {
-      const form = new FormData();
-      form.append('image', file);
-
-      const res = await axios.post(`${API_BASE}/api/panels`, form, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-
-      setPanels(prev => [...prev, res.data]);
-      setFile(null);
-    } catch (err: any) {
-      console.error(err);
-      setError(err.response?.data?.message || 'Upload thất bại.');
-    } finally {
-      setUploading(false);
+      if (editing.id) {
+        await axios.put(
+          `${API_BASE}/api/panels/${editing.id}`,
+          form,
+          { headers: { 'Content-Type': 'multipart/form-data' } }
+        );
+        // state sẽ update khi socket nhận 'panel:updated'
+      } else {
+        await axios.post(
+          `${API_BASE}/api/panels`,
+          form,
+          { headers: { 'Content-Type': 'multipart/form-data' } }
+        );
+        // state sẽ update khi socket nhận 'panel:added'
+      }
+      setEditing(null);
+    } catch (err) {
+      console.error('Lỗi lưu panel:', err);
     }
   };
 
+  // 6) Render UI
   return (
     <Container>
-      <h1>Quản trị Panels</h1>
-
-      <Form onSubmit={handleSubmit}>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-          disabled={uploading}
-        />
-        <Button type="submit" disabled={uploading}>
-          {uploading ? 'Đang upload...' : 'Tạo panel mới'}
-        </Button>
-      </Form>
-
-      {error && <Message>{error}</Message>}
+      <h1>Quản lý Panels</h1>
+      <Button onClick={() => setEditing({ sort_order: 0 })}>
+        + Thêm panel mới
+      </Button>
 
       <List>
         {panels.map(p => (
           <Item key={p.id}>
             <img
-              src={
-                p.image_url.startsWith('http')
-                  ? p.image_url
-                  : `${API_BASE}${p.image_url}`
-              }
+              src={p.image_url.startsWith('http') ? p.image_url : `${API_BASE}${p.image_url}`}
               alt={`Panel ${p.id}`}
-              width={150}
+              width={120}
             />
             <div>Order: {p.sort_order}</div>
+            <Actions>
+              <button onClick={() => handleEdit(p)}>Sửa</button>
+              <button onClick={() => handleDelete(p.id)}>Xóa</button>
+            </Actions>
           </Item>
         ))}
       </List>
+
+      {editing && (
+        <Modal>
+          <h2>{editing.id ? 'Sửa' : 'Thêm'} panel</h2>
+          <Form>
+            <label>
+              Ảnh
+              <input type="file" accept="image/*" onChange={handleFile} />
+            </label>
+            <label>
+              Thứ tự
+              <input
+                type="number"
+                name="sort_order"
+                value={editing.sort_order}
+                onChange={handleChange}
+              />
+            </label>
+            <Button onClick={handleSave}>Lưu</Button>
+            <Button alt onClick={() => setEditing(null)}>
+              Hủy
+            </Button>
+          </Form>
+        </Modal>
+      )}
     </Container>
   );
 };
@@ -106,44 +165,35 @@ const AdminPanel: React.FC = () => {
 export default AdminPanel;
 
 /* Styled Components */
-
-const Container = styled.div`
-  padding: 20px;
+const Container = styled.div`padding: 20px;`;
+const Button = styled.button<{ alt?: boolean }>`
+  background: ${({ alt }) => (alt ? '#ccc' : '#00539c')};
+  color: white;
+  padding: 8px 12px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
 `;
-
-const Form = styled.form`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 16px;
-`;
-
-const List = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-`;
-
+const List = styled.div`display: flex; flex-wrap: wrap; gap: 12px;`;
 const Item = styled.div`
   border: 1px solid #ddd;
   padding: 8px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 `;
-
-const Button = styled.button`
-  background: #00539c;
-  color: white;
-  padding: 8px 12px;
-  border: none;
-  cursor: pointer;
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: default;
-  }
+const Actions = styled.div`
+  margin-left: auto;
+  button { margin-left: 4px; }
 `;
-
-const Message = styled.p`
-  color: red;
-  margin: 8px 0;
+const Modal = styled.div`
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: white; padding: 20px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+`;
+const Form = styled.div`
+  display: flex; flex-direction: column; gap: 12px;
+  label { display: flex; flex-direction: column; font-weight: 500; }
 `;

@@ -7,8 +7,9 @@ import nodemailer from 'nodemailer';
 import { createServer } from 'http';
 import { Server as IOServer } from 'socket.io';
 import slidesRouter from './routes/slides';
-import panelsRouter from './routes/Panel';
-
+import panelsRouter from './routes/panels';
+import authRouter from './routes/auth';
+import path from 'path';
 dotenv.config();
 
 const {
@@ -21,13 +22,14 @@ const {
   EMAIL_PASS = '',
   ADMIN_EMAIL = '',
   PORT = '4000',
-  VITE_API_URL_SERVER = '',
-  VITE_API_URL_LOCAL = '',
+  JWT_SECRET = '',
+  FRONTEND_URL_SERVER = '',
+  FRONTEND_URL_LOCAL = '',
   NODE_ENV = 'development',
 } = process.env;
 
 const isProd = NODE_ENV === 'production';
-const FRONTEND_URL = isProd ? VITE_API_URL_SERVER : VITE_API_URL_LOCAL;
+const FRONTEND_URL = isProd ? FRONTEND_URL_SERVER : FRONTEND_URL_LOCAL;
 
 // --- Validate environment variables ---
 if (!DB_HOST || !DB_USER || !DB_PASS || !DB_NAME) {
@@ -41,6 +43,10 @@ if (!EMAIL_USER || !EMAIL_PASS || !ADMIN_EMAIL) {
 if (!FRONTEND_URL) {
   console.error(`❌ Thiếu FRONTEND_URL_${isProd ? 'SERVER' : 'LOCAL'} trong .env`);
   process.exit(1);
+}
+if (!JWT_SECRET) {
+  console.error('❌ Thiếu JWT_SECRET trong .env')
+  process.exit(1)
 }
 
 // --- MySQL pool ---
@@ -69,6 +75,12 @@ app.use(
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
   })
+);
+
+// 1) Serve ảnh upload
+app.use(
+  '/uploads',
+  express.static(path.resolve(__dirname, 'public', 'uploads'))
 );
 
 // --- Test endpoints ---
@@ -142,15 +154,17 @@ app.post('/api/signup',async (req: Request<{}, {}, SignupBody>,res: Response,nex
   }
 });
 
-// --- Slides REST + real‑time via Socket.io ---
-app.use('/api/slides', slidesRouter);
-app.use('/api/panels', panelsRouter);
-
-// --- Create HTTP server & Socket.io ---
+// Create HTTP server & Socket.IO
 const server = createServer(app);
-export const io = new IOServer(server, {
+const io = new IOServer(server, {
   cors: { origin: FRONTEND_URL, methods: ['GET','POST','PUT','DELETE'] }
 });
+app.locals.io = io;
+
+// Mount API routers
+app.use('/api/slides', slidesRouter);
+app.use('/api/panels', panelsRouter);
+app.use('/api/auth', authRouter);
 
 // --- Start listening ---
 server.listen(Number(PORT), () => {

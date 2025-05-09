@@ -79,3 +79,39 @@ export const Modal = styled.div`
    font-weight: bold;
    cursor: pointer
 `
+export const AdminMenu = styled.div`
+  position: relative;
+  display: inline-block;
+`
+
+export const MenuButton = styled.button`
+  background: none;
+  border: none;
+  color: white;
+  font: inherit;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  &:hover { text-decoration: underline; }
+`
+
+export const Submenu = styled.div`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  min-width: 160px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  z-index: 10;
+
+  a {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: #333;
+    text-decoration: none;
+  }
+  a:hover {
+    background: #f5f5f5;
+  }
+`

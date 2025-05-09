@@ -1,9 +1,9 @@
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
-import App from './App.tsx'
+import { AuthProvider } from './Contexts/AuthContext';
+import App from './App'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-   <BrowserRouter>
+   <AuthProvider>
       <App />
-   </BrowserRouter>
+   </AuthProvider>
 )
