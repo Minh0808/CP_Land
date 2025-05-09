@@ -87,6 +87,9 @@ app.use(
 app.get('/', (_req, res) => {
   res.send('✅ Server CP_Land đang hoạt động!');
 });
+app.get('/api/signup', (_req, res) => {
+  res.send('✅ Signup sẵn sàng!');
+});
 app.get('/api/ping', (_req, res) => {
   res.json({ ok: true, timestamp: new Date().toISOString() });
 });
@@ -153,13 +156,6 @@ app.post('/api/signup',async (req: Request<{}, {}, SignupBody>,res: Response,nex
     res.status(500).json({ message: 'Lỗi máy chủ, vui lòng thử lại sau.' });
   }
 });
-
-// Create HTTP server & Socket.IO
-// const server = createServer(app);
-// const io = new IOServer(server, {
-//   cors: { origin: FRONTEND_URL, methods: ['GET','POST','PUT','DELETE'] }
-// });
-// app.locals.io = io;
 
 // Mount API routers
 app.use('/api/slides', slidesRouter);
