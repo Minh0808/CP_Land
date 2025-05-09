@@ -87,9 +87,7 @@ app.use(
 app.get('/', (_req, res) => {
   res.send('✅ Server CP_Land đang hoạt động!');
 });
-app.get('/api/signup', (_req, res) => {
-  res.send('✅ Signup sẵn sàng!');
-});
+
 app.get('/api/ping', (_req, res) => {
   res.json({ ok: true, timestamp: new Date().toISOString() });
 });
@@ -114,6 +112,10 @@ app.get('/api/mail-check', async (_req, res) => {
 
 // --- Signup endpoint ---
 type SignupBody = { email: string; phone: string };
+app.get('/api/signup', (_req, res) => {
+  res.send('✅ Signup sẵn sàng!');
+});
+
 app.post('/api/signup',async (req: Request<{}, {}, SignupBody>,res: Response,next: NextFunction): Promise<void> => {
   const { email, phone } = req.body;
   if (!email || !phone) {

@@ -28,7 +28,7 @@ const Login: React.FC = () => {
   // Nếu user đã login (có token), tự động chuyển về home
   useEffect(() => {
     if (existingToken) {
-      navigate('/')
+      navigate('/home')
     }
   }, [])
 
