@@ -80,9 +80,10 @@ const Playout: React.FC = () => {
               </MenuButton>
               {openAdminMenu && (
                 <Submenu>
-                  <NavLink to="/admin/panels">Thêm Panel</NavLink>
-                  <NavLink to="/admin/slides">Thêm Slide</NavLink>
+                  <NavLink to="/panels">Thêm Panel</NavLink>
+                  <NavLink to="/slides">Thêm Slide</NavLink>
                   <NavLink to="/admin/posts">Đăng Bài</NavLink>
+                  <NavLink to="/admin/news">Đăng Tin Tức</NavLink>
                 </Submenu>
               )}
             </AdminMenu>

@@ -23,14 +23,17 @@ export const Background = styled.div`
    min-height: 100vh;
 `
 export const Navigation = styled.div`
-   position: relative;
+   width: 100%;
+   position: fixed;
+   top: 0;
    display: flex;
    justify-content: space-between;
    align-items: center;
    padding: 0 20px;
-   background-color: #3b81a3;
+   background-color: #005a97;
    height: 65px;
    flex-shrink: 0;
+   z-index: 2;
 `
 
 export const LogoImg = styled.img`
@@ -64,11 +67,13 @@ export const Main = styled.main`
    background: #f5f5f5;
 `
 export const Modal = styled.div`
+   position: fixed;
+   bottom: 0;
    flex-shrink: 0;
    width: 300px;
    height: 50px;
    margin-left: 50px;
-   background: #3b81a3;
+   background: #005a97;
    color: white;
    display: flex;
    align-items: center;

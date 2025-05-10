@@ -7,7 +7,8 @@ import signupRouter from './routes/signup'
 import authRouter   from './routes/auth'
 import panelsRouter from './routes/panels'
 import slidesRouter from './routes/slides'
-
+import rssNewsRouter from './routes/newfeeds'
+import adminNewsRouter from './routes/adminNewfeeds';
 
 dotenv.config()
 
@@ -41,6 +42,8 @@ app.use('/api/signup', signupRouter)
 app.use('/api/auth',   authRouter)
 app.use('/api/panels', panelsRouter)
 app.use('/api/slides', slidesRouter)
+app.use('/api/rss', rssNewsRouter)
+app.use('/api/admin', adminNewsRouter);
 
 app.get('/', (_req, res) => {
   res.send('✅ API CP_Land đang hoạt động!')

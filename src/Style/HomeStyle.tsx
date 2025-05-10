@@ -87,7 +87,7 @@ export const CardCarousel = styled.div`
   position: relative;
   overflow-x: hidden;
   overflow-y: visible;
-  margin: 40px auto;
+  margin: 20px auto;
   max-width: 1200px;
   height: 100%;
   button {
@@ -127,7 +127,6 @@ export const Card = styled.div`
     
   }
 `
-
 export const ImageBox = styled.div<{ $url: string }>`
   width: 100%;
   padding-top: 60%;            /* tỉ lệ 3:5, tùy bạn */
@@ -151,5 +150,96 @@ export const Span = styled.span`
 `
 export const Title = styled.h1`
   text-align: center;
-  color: black;
+  color: #015ea7;
+  padding-top: 30px;
 `
+export const NewsSection = styled.section`
+  margin: 40px 0;
+`;
+
+export const SectionTitle = styled.h2`
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 24px;
+  color: #015ea7;
+`;
+
+export const NewsGrid = styled.div`
+  display: grid;
+  grid-template-columns: 360px 750px;
+  gap: 50px;
+  justify-content: center;
+`;
+
+export const MainColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+`;
+
+export const SideColumn = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+`;
+
+export const MainCard = styled.a`
+   display: block;
+   background: #fff;
+   overflow: hidden;
+   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+   text-decoration: none;
+   color: inherit;
+   padding: 15px;
+
+   img {
+      width: 100%;
+      height: auto;
+   }
+   div {
+      padding: 12px;
+   }
+   h3 {
+      margin: 0 0 8px;
+      font-size: 1.25rem;
+   }
+   p {
+      margin: 0;
+      color: #555;
+   }
+`
+export const SideCard = styled.a`
+   display: flex;
+   background: #fff;
+   overflow: hidden;
+   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+   text-decoration: none;
+   color: inherit;
+   height: auto;
+   padding: 15px;
+
+   img {
+      width: 120px;
+      height: 100%;
+      object-fit: cover;
+   }
+
+   div {
+      padding: 8px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+   }
+
+   h4 {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.2;
+   }
+
+   &:hover {
+      border-right: 2px solid blue;
+   }
+`;
