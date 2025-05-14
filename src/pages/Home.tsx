@@ -1,7 +1,7 @@
 // src/pages/Home.tsx
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
+import { FaChevronLeft, FaChevronRight, FaThumbsUp, FaInfo, FaCogs, FaDollarSign } from 'react-icons/fa'
 import {
    Background,
    SliderWrapper,
@@ -26,8 +26,14 @@ import {
    SectionTitle,
    SideCard,
    SideColumn,
+   Attraction,
+   AttractionInfor,
+   TitleInfor,
+   Icon,
+   AttracTiontitle,
+   TextInfo,
 } from '../Style/HomeStyle'
-import { AdminNewsItem, NewsItem, PanelData, SlideData } from '../types/interface'
+import { NewsItem, PanelData, SlideData } from '../types/interface'
 
 const isProd = import.meta.env.MODE === 'production'
 const API_BASE = isProd
@@ -40,11 +46,14 @@ const Home: React.FC = () => {
    const [slides, setSlides] = useState<SlideData[]>([])
    const [slideIndex, setSlideIndex] = useState(0)
    const [news, setNews] = useState<NewsItem[]>([]);
-   const [newsRss, setNewsRss]     = useState<NewsItem[]>([]);
-   const [newsCustom, setNewsCustom] = useState<AdminNewsItem[]>([]);
+   const panelRef = useRef<HTMLDivElement>(null);
+   
+   const scrollToPanel = () => {
+    panelRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
    useEffect(() => {
-      axios.get<PanelData[]>('/api/panels')
+      axios.get<PanelData[]>('/panels')
          .then(res => {
          setPanels(res.data.sort((a, b) => a.sort_order - b.sort_order))
          setPanelIndex(0)
@@ -61,7 +70,7 @@ const Home: React.FC = () => {
    }, [panels.length])
 
    useEffect(() => {
-      axios.get<SlideData[]>('/api/slides')
+      axios.get<SlideData[]>('/slides')
          .then(res => {
          setSlides(res.data.sort((a, b) => a.sort_order - b.sort_order))
          setSlideIndex(0)
@@ -70,22 +79,12 @@ const Home: React.FC = () => {
    }, [])
 
    useEffect(() => {
-      axios.get<NewsItem[]>('/api/rss/hot-real')
+      axios.get<NewsItem[]>('/rss/hot-real')
          .then(res => setNews(res.data))
          .catch(console.error);
    }, []);
    const mainItems = news.slice(0, 2);
    const sideItems = news.slice(2);
-
-   useEffect(() => {
-      axios.get<NewsItem[]>('/api/rss/hot-real')
-         .then(res => setNewsRss(res.data))
-         .catch(console.error);
-
-      axios.get<AdminNewsItem[]>('/api/admin/news')
-         .then(res => setNewsCustom(res.data))
-         .catch(console.error);
-   }, []);
 
    const prevPanel = () => setPanelIndex(i => Math.max(i - 1, 0))
    const nextPanel = () => setPanelIndex(i => Math.min(i + 1, panels.length - 1))
@@ -97,28 +96,30 @@ const Home: React.FC = () => {
 
    return (
       <Background>
-         <SliderWrapper>
-         <Slides $index={panelIndex}>
-            {panels.map(p => (
-               <Slide
-               key={p.id}
-               $url={p.image_url.startsWith('http')
-                  ? p.image_url
-                  : `${API_BASE}${p.image_url}`}
-               />
-            ))}
-         </Slides>
-         <PrevButton onClick={prevPanel}><FaChevronLeft/></PrevButton>
-         <NextButton onClick={nextPanel}><FaChevronRight/></NextButton>
-         <Dots>
-            {panels.map((_, idx) => (
-               <Dot
-               key={idx}
-               $active={idx === panelIndex}
-               onClick={() => setPanelIndex(idx)}
-               />
-            ))}
-         </Dots>
+         
+         
+         <SliderWrapper ref={panelRef}>
+            <Slides $index={panelIndex}>
+               {panels.map(p => (
+                  <Slide
+                  key={p.id}
+                  $url={p.image_url.startsWith('http')
+                     ? p.image_url
+                     : `${API_BASE}${p.image_url}`}
+                  />
+               ))}
+            </Slides>
+            <PrevButton onClick={prevPanel}><FaChevronLeft/></PrevButton>
+            <NextButton onClick={nextPanel}><FaChevronRight/></NextButton>
+            <Dots>
+               {panels.map((_, idx) => (
+                  <Dot
+                  key={idx}
+                  $active={idx === panelIndex}
+                  onClick={() => setPanelIndex(idx)}
+                  />
+               ))}
+            </Dots>
          </SliderWrapper>
          <Title>DỰ ÁN ĐANG MỞ BÁN</Title>
          <CardCarousel>
@@ -153,7 +154,7 @@ const Home: React.FC = () => {
                   ))}
                </MainColumn>
                <SideColumn>
-                  {sideItems.map((n, i) => (
+                  {sideItems.map((n,i) => (
                      <SideCard key={i} href={n.link} target="_blank" rel="noreferrer">
                         {n.image && <img src={n.image} alt={n.title} />}
                         <div>
@@ -164,6 +165,47 @@ const Home: React.FC = () => {
                </SideColumn>
             </NewsGrid>
          </NewsSection>
+         <div>
+            <SectionTitle>TẠI SAO LỰA CHỌN CHÚNG TÔI</SectionTitle>
+            <Attraction>
+               <AttractionInfor>
+                  <Icon onClick={scrollToPanel}><FaInfo/></Icon>
+                  <AttracTiontitle>THÔNG TIN CHÍNH THỐNG</AttracTiontitle>
+                  <TitleInfor>
+                     <TextInfo>Cập nhật trực tiếp từ chủ đầu tư</TextInfo>
+                     <TextInfo>Mới nhất</TextInfo>
+                     <TextInfo>Chính xác nhất</TextInfo>
+                  </TitleInfor>
+               </AttractionInfor>
+               <AttractionInfor>
+                  <Icon onClick={scrollToPanel}><FaThumbsUp/></Icon>  
+                  <AttracTiontitle>ĐỐI TÁC UY TÍN</AttracTiontitle>
+                  <TitleInfor>
+                     <TextInfo>Pháp lý rõ ràng</TextInfo>
+                     <TextInfo>Chính sách bán hàng tốt nhất</TextInfo>
+                     <TextInfo>Đảm bảo quyền lợi khách hàng</TextInfo>
+                  </TitleInfor>
+               </AttractionInfor>
+               <AttractionInfor>
+                  <Icon onClick={scrollToPanel}><FaCogs/></Icon>                  
+                  <AttracTiontitle>GIẢI PHÁP ĐỒNG BỘ</AttracTiontitle>
+                  <TitleInfor>
+                     <TextInfo>Tư vấn mua và thuê nhà từ A-Z</TextInfo>
+                     <TextInfo>Tư vấn nội thất tài chính và pháp lý</TextInfo>
+                     <TextInfo>Tư vấn nội thất tài chính và pháp lý</TextInfo>
+                  </TitleInfor>
+               </AttractionInfor>
+               <AttractionInfor>
+                  <Icon onClick={scrollToPanel}><FaDollarSign/></Icon>                
+                  <AttracTiontitle>SINH LỜI TỐI ĐA</AttracTiontitle>
+                  <TitleInfor>
+                     <TextInfo>Đầu tư hiệu quả</TextInfo>
+                     <TextInfo>Giá trị căn hộ tăng theo thời gian</TextInfo>
+                     <TextInfo>Đa dạng dòng sản phẩm</TextInfo>
+                  </TitleInfor>
+               </AttractionInfor>
+            </Attraction>
+         </div>
       </Background>
    )
 }

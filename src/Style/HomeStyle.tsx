@@ -154,13 +154,14 @@ export const Title = styled.h1`
   padding-top: 30px;
 `
 export const NewsSection = styled.section`
-  margin: 40px 0;
+  margin-top: 40px;
+  background-color: #dddddd;
 `;
 
 export const SectionTitle = styled.h2`
   font-size: 2rem;
   text-align: center;
-  margin-bottom: 24px;
+  padding: 24px 0;
   color: #015ea7;
 `;
 
@@ -169,6 +170,7 @@ export const NewsGrid = styled.div`
   grid-template-columns: 360px 750px;
   gap: 50px;
   justify-content: center;
+  padding-bottom: 50px;
 `;
 
 export const MainColumn = styled.div`
@@ -192,6 +194,9 @@ export const MainCard = styled.a`
    text-decoration: none;
    color: inherit;
    padding: 15px;
+   box-sizing: border-box;
+   border-bottom: 2px solid transparent;
+   transition: border-color 0.2s ease;
 
    img {
       width: 100%;
@@ -208,6 +213,9 @@ export const MainCard = styled.a`
       margin: 0;
       color: #555;
    }
+   &:hover {
+      border-bottom: 2px solid blue;
+   }
 `
 export const SideCard = styled.a`
    display: flex;
@@ -218,6 +226,9 @@ export const SideCard = styled.a`
    color: inherit;
    height: auto;
    padding: 15px;
+   box-sizing: border-box;
+   border-right: 2px solid transparent;
+   transition: border-color 0.2s ease;
 
    img {
       width: 120px;
@@ -243,3 +254,50 @@ export const SideCard = styled.a`
       border-right: 2px solid blue;
    }
 `;
+export const Attraction = styled.div`
+   display: flex;
+   flex-direction: row;
+   justify-content: space-evenly;
+   margin-bottom: 50px;
+`
+export const AttractionInfor = styled.div`
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+`
+export const Icon = styled.a`
+   width: 87px;
+   height: 87px;
+   border: 1px solid #888;
+   border-radius: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   margin-bottom: 15px;
+   cursor: pointer;
+   & > svg {
+      color: #888;
+      width: 32px;
+      height: 32px;
+   }
+
+   &:hover{
+      background-color: #005a97;
+      border: none;
+      & > svg {
+      color: white;
+   }
+   }
+`
+export const TitleInfor = styled.div`
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+`
+export const AttracTiontitle = styled.h3`
+   color: #575656;
+   margin-bottom: 20px;
+`
+export const TextInfo = styled.p`
+   color: #888;
+`

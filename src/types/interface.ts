@@ -1,3 +1,5 @@
+import { ReactNode } from "react"
+
 export interface PanelData {
    id: number
    image_url: string
@@ -21,11 +23,8 @@ export interface NewsItem {
   image: string;
 }
 
-export interface AdminNewsItem {
-  id: number;
-  title: string;
-  link: string;
-  image_url: string | null;  // nếu không bắt buộc
-  summary:   string | null;  // nếu không bắt buộc
-  created_at: string;        // hoặc Date, tuỳ bạn parse thế nào
+export interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  children: ReactNode;
 }

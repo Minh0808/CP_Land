@@ -9,6 +9,8 @@ import panelsRouter from './routes/panels'
 import slidesRouter from './routes/slides'
 import rssNewsRouter from './routes/newfeeds'
 import adminNewsRouter from './routes/adminNewfeeds';
+import { Request, Response, NextFunction } from 'express'
+
 
 dotenv.config()
 
@@ -48,6 +50,13 @@ app.use('/api/admin', adminNewsRouter);
 app.get('/', (_req, res) => {
   res.send('✅ API CP_Land đang hoạt động!')
 })
+
+app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+  console.error('❌ Internal error:', err)
+  res.status(500).json({ message: 'Server lỗi nội bộ.' })
+})
+
+
 
 // BẬT HTTP SERVER
 const port = parseInt(PORT, 10) || 4000

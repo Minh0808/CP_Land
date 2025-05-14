@@ -10,13 +10,13 @@ const API_BASE = isProd
   ? (import.meta.env.VITE_API_URL_SERVER as string)
   : (import.meta.env.VITE_API_URL_LOCAL as string)
 
-// 2) Thiết lập baseURL cho axios
-axios.defaults.baseURL = API_BASE
+// 2) Thiết lập baseURL cho axios (bao gồm /api prefix)
+axios.defaults.baseURL = `${API_BASE}/api`
 
 // 3) Nếu đã có token lưu trước đó, gán luôn header Authorization
-const existingToken = localStorage.getItem('token')
-if (existingToken) {
-  axios.defaults.headers.common['Authorization'] = `Bearer ${existingToken}`
+const tokenInStorage = localStorage.getItem('token')
+if (tokenInStorage) {
+  axios.defaults.headers.common['Authorization'] = `Bearer ${tokenInStorage}`
 }
 
 const Login: React.FC = () => {
@@ -27,20 +27,21 @@ const Login: React.FC = () => {
 
   // Nếu user đã login (có token), tự động chuyển về home
   useEffect(() => {
-    if (existingToken) {
+    if (localStorage.getItem('token')) {
       navigate('/home')
     }
-  }, [])
+  }, [navigate])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
 
     try {
-      // gọi POST /api/auth/login
-      const res = await axios.post<{
-        token: string
-      }>('/api/auth', { email, password })
+      // Gọi POST /api/auth/login
+      const res = await axios.post<{ token: string }>(
+        '/auth/login',
+        { email, password }
+      )
 
       const { token } = res.data
 

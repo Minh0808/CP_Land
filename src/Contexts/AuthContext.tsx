@@ -19,18 +19,28 @@ export const AuthContext = createContext<AuthContextValue>({
 });
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+   const [user, setUser] = useState<User | null>(null);
+   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    axios.get<{ authenticated: boolean; user?: User }>('/api/auth')
+   useEffect(() => {
+   const token = localStorage.getItem('token')
+   if (!token) {
+      setUser(null)
+      setLoading(false)
+      return
+   }
+
+   axios.get<User>('/auth/me')
       .then(res => {
-        if (res.data.authenticated && res.data.user) {
-          setUser(res.data.user)
-        }
+         setUser(res.data)
       })
-      .finally(() => setLoading(false))
-  }, [])
+      .catch(() => {
+         setUser(null)
+      })
+      .finally(() => {
+         setLoading(false)
+      })
+   }, [])
 
   return (
     <AuthContext.Provider value={{ user, loading }}>

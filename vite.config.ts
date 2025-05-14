@@ -5,11 +5,12 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      // redirect mọi /api → http://localhost:4000
+      // chuyển tất cả /api/* sang localhost:4000
       '/api': {
         target: 'http://localhost:4000',
-        changeOrigin: true
-      }
-    }
-  }
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
 })

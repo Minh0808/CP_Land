@@ -60,6 +60,7 @@ export const Nav = styled.nav`
 export const Social = styled.div`
    display: flex;
    gap: 10px;
+   align-items: center;
 `
 export const Main = styled.main`
    flex: 1;
@@ -88,17 +89,19 @@ export const AdminMenu = styled.div`
   position: relative;
   display: inline-block;
 `
-
 export const MenuButton = styled.button`
   background: none;
   border: none;
   color: white;
-  font: inherit;
+  font-weight: bold;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 16px;
   cursor: pointer;
   padding: 0.5rem 1rem;
-  &:hover { text-decoration: underline; }
+  &:hover { 
+   color: blue;
+}
 `
-
 export const Submenu = styled.div`
   position: absolute;
   top: 100%;
@@ -119,4 +122,34 @@ export const Submenu = styled.div`
   a:hover {
     background: #f5f5f5;
   }
+`
+export const LogoFooter = styled.img`
+   width: 250px;
+   height: 150px;
+   padding-top: 20px;
+`
+export const Footer = styled.div`
+   background-color: #005a97;
+   display: flex;
+   flex-direction: row;
+   justify-content: space-evenly;
+   padding-bottom: 50px;   
+`
+export const InforFooter = styled.div`
+   
+`
+export const InforItem = styled.p`
+   padding-top: 20px;
+   color: white;
+   font-size: 18px;
+`
+
+export const Logout = styled.button`
+   background: none;
+   border: none;
+   color: white;
+   font-size: 16px;
+   font-weight: bold;
+   font-family: 'Times New Roman', Times, serif;
+   cursor: pointer;
 `
