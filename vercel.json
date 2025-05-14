@@ -21,11 +21,6 @@
     { "src": "^/panels(?:/.*)?$",  "dest": "Server/server.ts" },
     { "src": "^/uploads/(.*)$",    "dest": "Server/server.ts" },
     { "src": "/(.*)",              "dest": "/index.html" }
-  ],
-   "functions": {
-     "Server/server.ts": {
-       "includeFiles": "Server/public/uploads/**"
-     }
-   }
+  ]
  }
  
