@@ -34,6 +34,7 @@ const corsOrigin =
 
 // 4. Khởi tạo app
 const app = express()
+app.use(cors({ origin: corsOrigin, credentials: true }))
 
 // 5. Middleware chung
 app.use(express.json())
