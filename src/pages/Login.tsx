@@ -5,12 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
 // 1) Xác định API_BASE dựa vào env
-const isProd = import.meta.env.MODE === 'production'
-const API_BASE = isProd
-  ? (import.meta.env.VITE_API_URL_SERVER as string)
-  : (import.meta.env.VITE_API_URL_LOCAL as string)
-
-// 2) Thiết lập baseURL cho axios (bao gồm /api prefix)
+const API_BASE = import.meta.env.VITE_API_URL as string
 axios.defaults.baseURL = `${API_BASE}/api`
 
 // 3) Nếu đã có token lưu trước đó, gán luôn header Authorization

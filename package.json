@@ -8,7 +8,7 @@
     "dev:server": "ts-node-dev --project Server/tsconfig.json --respawn Server/server.ts",
     "dev": "concurrently --kill-others --prefix none \"npm run dev:server\" \"npm run dev:client\"",
     "build": "vite build",
-    "start": "node Server/server.js"
+    "start": "node Server/server.ts"
   },
   "dependencies": {
     "@vercel/node": "^5.1.15",

@@ -35,10 +35,9 @@ import {
 } from '../Style/HomeStyle'
 import { NewsItem, PanelData, SlideData } from '../types/interface'
 
-const isProd = import.meta.env.MODE === 'production'
-const API_BASE = isProd
-   ? (import.meta.env.VITE_API_URL_SERVER as string)
-   : (import.meta.env.VITE_API_URL_LOCAL as string)
+// 1) Xác định API_BASE dựa vào env
+const API_BASE = import.meta.env.VITE_API_URL as string
+axios.defaults.baseURL = `${API_BASE}/api`
 
 const Home: React.FC = () => {
    const [panels, setPanels] = useState<PanelData[]>([])

@@ -9,10 +9,9 @@ interface Panel {
   sort_order: number;
 }
 
-const isProd = import.meta.env.MODE === 'production';
-const API_LOCAL = import.meta.env.VITE_API_URL_LOCAL as string;
-const API_SERVER = import.meta.env.VITE_API_URL_SERVER as string;
-const API_BASE = isProd ? API_SERVER : API_LOCAL;
+// 1) Xác định API_BASE dựa vào env
+const API_BASE = import.meta.env.VITE_API_URL as string
+axios.defaults.baseURL = `${API_BASE}/api`
 
 const AdminPanel: React.FC = () => {
   const [panels, setPanels] = useState<Panel[]>([]);

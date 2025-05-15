@@ -9,6 +9,7 @@ import {
   Title,
   Title2
 } from '../Style/SignUpStyle';
+import axios from 'axios';
 
 interface Props {
   onClose(): void;
@@ -32,9 +33,9 @@ const ModalSignUp: React.FC<Props> = ({ onClose }) => {
     }, CLOSE_DURATION);
   };
 
-  const API = import.meta.env.DEV
-    ? import.meta.env.VITE_API_URL_LOCAL
-    : import.meta.env.VITE_API_URL_SERVER
+  // 1) Xác định API_BASE dựa vào env
+   const API_BASE = import.meta.env.VITE_API_URL as string
+   axios.defaults.baseURL = `${API_BASE}/api`
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -48,7 +49,7 @@ const ModalSignUp: React.FC<Props> = ({ onClose }) => {
     setLoading(true);
 
     try {
-      const res = await fetch(`${API}/api/signup`, {
+      const res = await fetch(`${API_BASE}/api/signup`, {
          method: 'POST',
          headers: { 'Content-Type': 'application/json' },
          body: JSON.stringify({ email, phone }),

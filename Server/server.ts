@@ -1,5 +1,5 @@
 // src/server.ts
-import express from 'express'
+import express, { Request, Response, NextFunction } from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import path from 'path'
@@ -8,60 +8,73 @@ import authRouter   from './routes/auth'
 import panelsRouter from './routes/panels'
 import slidesRouter from './routes/slides'
 import rssNewsRouter from './routes/newfeeds'
-import adminNewsRouter from './routes/adminNewfeeds';
-import { Request, Response, NextFunction } from 'express'
+import adminNewsRouter from './routes/adminNewfeeds'
 
+// 1. Load .env
+dotenv.config({
+  path:
+    process.env.NODE_ENV === 'production'
+      ? '.env.production'
+      : '.env.development'
+})
 
-dotenv.config()
-
+// 2. Destructure biến môi trường
 const {
-  VITE_API_URL_SERVER = '',
-  VITE_API_URL_LOCAL = '',
+  PORT = '4000',
+  NODE_ENV = 'development',
+  BACKEND_URL_LOCAL = 'http://localhost:4000',
   FRONTEND_URL_SERVER = '',
-  FRONTEND_URL_LOCAL  = '',
-  PORT                = '4000',
-  NODE_ENV            = 'development',
 } = process.env
 
-const isProd       = NODE_ENV === 'production'
-const FRONTEND_URL = isProd ? FRONTEND_URL_SERVER : FRONTEND_URL_LOCAL
-const API_BASE = isProd ? VITE_API_URL_SERVER : VITE_API_URL_LOCAL
+// 3. Tính toán CORS origin
+const corsOrigin =
+  NODE_ENV === 'production'
+    ? FRONTEND_URL_SERVER
+    : BACKEND_URL_LOCAL
+
+// 4. Khởi tạo app
 const app = express()
 
-// Middleware chung
+// 5. Middleware chung
 app.use(express.json())
 app.use(
   cors({
-    origin: FRONTEND_URL,
-    methods: ['GET','POST','PUT','DELETE'],
+    origin: corsOrigin,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
   })
 )
 
-app.use('/uploads', express.static(path.resolve(__dirname, 'public', 'uploads')))
+// 6. Static files (uploads)
+app.use(
+  '/uploads',
+  express.static(path.resolve(__dirname, 'public', 'uploads'))
+)
 
+// 7. Routes API
 app.use('/api/signup', signupRouter)
 app.use('/api/auth',   authRouter)
 app.use('/api/panels', panelsRouter)
 app.use('/api/slides', slidesRouter)
-app.use('/api/rss', rssNewsRouter)
-app.use('/api/admin', adminNewsRouter);
+app.use('/api/rss',    rssNewsRouter)
+app.use('/api/admin',  adminNewsRouter)
 
+// 8. Health‐check endpoint
 app.get('/', (_req, res) => {
   res.send('✅ API CP_Land đang hoạt động!')
 })
 
+// 9. Error handler
 app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
   console.error('❌ Internal error:', err)
   res.status(500).json({ message: 'Server lỗi nội bộ.' })
 })
 
-
-
-// BẬT HTTP SERVER
-const port = parseInt(PORT, 10) || 4000
-app.listen(port, () => {
-  console.log(`🚀 Server đang chạy tại ${API_BASE}`)
+// 10. Start server
+const portNumber = parseInt(PORT, 10)
+app.listen(portNumber, () => {
+  console.log(`🚀 Server đang chạy ở cổng: ${BACKEND_URL_LOCAL}`)
+  console.log(`   ENV:          ${NODE_ENV}`)
 })
 
 export default app
