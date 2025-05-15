@@ -28,8 +28,8 @@ import {
    Submenu,
 } from "../Style/PlayoutStyle"
 import ModalQC, { Img, Title } from '../Component/Modal'
-import DHVPanel from '../../../Images/dhv.webp'
-import LogoDHV from '../../../Images/logo.webp'
+import DHVPanel from '../../public/image/dhv.webp'
+import LogoDHV from '../../public/image/logo.webp'
 
 interface User {
   id: number
