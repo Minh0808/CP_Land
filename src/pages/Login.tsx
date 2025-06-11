@@ -1,76 +1,70 @@
 // src/pages/Login.tsx
-import React, { useState, useEffect } from 'react'
-import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
-import styled from 'styled-components'
-
-// 1) Xác định API_BASE dựa vào env
-const API_BASE = import.meta.env.VITE_API_URL as string
-axios.defaults.baseURL = `${API_BASE}/api`
-
-// 3) Nếu đã có token lưu trước đó, gán luôn header Authorization
-const tokenInStorage = localStorage.getItem('token')
-if (tokenInStorage) {
-  axios.defaults.headers.common['Authorization'] = `Bearer ${tokenInStorage}`
-}
+import React, { useState, useContext, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import { login as apiLogin } from '../API/api';
+import { AuthContext } from '../Contexts/AuthContext';
 
 const Login: React.FC = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState<string | null>(null)
-  const navigate = useNavigate()
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError]       = useState<string | null>(null);
 
-  // Nếu user đã login (có token), tự động chuyển về home
+  const { user, login } = useContext(AuthContext);
+  const navigate        = useNavigate();
+
+  // Nếu đã login rồi thì chuyển về home
   useEffect(() => {
-    if (localStorage.getItem('token')) {
-      navigate('/home')
+    if (user) {
+      navigate('/home');
     }
-  }, [navigate])
+  }, [user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError(null)
+    e.preventDefault();
+    setError(null);
+
+    if (!username || !password) {
+      setError('Vui lòng nhập tên đăng nhập và mật khẩu.');
+      return;
+    }
 
     try {
-      // Gọi POST /api/auth/login
-      const res = await axios.post<{ token: string }>(
-        '/auth/login',
-        { email, password }
-      )
+      // 1) Gọi helper apiLogin, nó unwrap data và trả về { jwt, user }
+      const { token, user } = await apiLogin(username, password);
 
-      const { token } = res.data
+      // 2) Cập nhật context + lưu token
+      login(token);
+      console.log('[Login] Logged in:', user, token);
 
-      // 1) Lưu token vào localStorage
-      localStorage.setItem('token', token)
-
-      // 2) Gán header Authorization cho axios
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-
-      // 3) Điều hướng về trang chủ
-      navigate('/home')
+      // 3) Điều hướng về Home
+      navigate('/home');
     } catch (err: any) {
-      console.error(err)
+      console.error('Login error:', err);
       setError(
-        err.response?.data?.message
-          || 'Đăng nhập thất bại, vui lòng thử lại.'
-      )
+        err.message ||
+        (err.response?.data?.message as string) ||
+        'Đăng nhập thất bại, vui lòng thử lại.'
+      );
     }
-  }
+  };
 
   return (
     <Container>
       <Form onSubmit={handleSubmit}>
         <h2>Đăng nhập</h2>
         {error && <ErrorMessage>{error}</ErrorMessage>}
+
         <Label>
-          Email
+          Tên đăng nhập
           <Input
-            type="email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
+            type="text"
+            value={username}
+            onChange={e => setUsername(e.target.value)}
             required
           />
         </Label>
+
         <Label>
           Mật khẩu
           <Input
@@ -80,13 +74,14 @@ const Login: React.FC = () => {
             required
           />
         </Label>
+
         <SubmitButton type="submit">Đăng nhập</SubmitButton>
       </Form>
     </Container>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;
 
 /* Styled Components */
 
@@ -94,7 +89,7 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   padding: 60px 0;
-`
+`;
 
 const Form = styled.form`
   width: 320px;
@@ -110,20 +105,20 @@ const Form = styled.form`
     margin: 0;
     text-align: center;
   }
-`
+`;
 
 const Label = styled.label`
   display: flex;
   flex-direction: column;
   font-weight: 500;
-`
+`;
 
 const Input = styled.input`
   margin-top: 4px;
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
-`
+`;
 
 const SubmitButton = styled.button`
   padding: 10px;
@@ -137,9 +132,9 @@ const SubmitButton = styled.button`
   &:hover {
     opacity: 0.9;
   }
-`
+`;
 
 const ErrorMessage = styled.div`
   color: red;
   text-align: center;
-`
+`;

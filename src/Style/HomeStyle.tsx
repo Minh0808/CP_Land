@@ -167,23 +167,32 @@ export const SectionTitle = styled.h2`
 
 export const NewsGrid = styled.div`
   display: grid;
-  grid-template-columns: 360px 750px;
+  grid-template-columns: 360px 1fr;
   gap: 50px;
   justify-content: center;
   padding-bottom: 50px;
+  max-width: 1325px;
+  margin: 0 auto;
 `;
 
 export const MainColumn = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
-
+  color: #015ea7;
+  font-size: 16px;
+  font-weight: bold;
 `;
 
 export const SideColumn = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 450px 450px;
+  height: 95.2%;
+  width: 800px;
   gap: 16px;
+  color: #015ea7;
+  font-size: 25px;
+  font-weight: bold;
 `;
 
 export const MainCard = styled.a`
@@ -224,7 +233,7 @@ export const SideCard = styled.a`
    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
    text-decoration: none;
    color: inherit;
-   height: auto;
+   height: 168px;
    padding: 15px;
    box-sizing: border-box;
    border-right: 2px solid transparent;
@@ -253,6 +262,10 @@ export const SideCard = styled.a`
    &:hover {
       border-right: 2px solid blue;
    }
+   p {
+      font-size: 14px;
+      color: #555;
+   }
 `;
 export const Attraction = styled.div`
    display: flex;
@@ -268,7 +281,7 @@ export const AttractionInfor = styled.div`
 export const Icon = styled.a`
    width: 87px;
    height: 87px;
-   border: 1px solid #888;
+   border: 3px solid #f70101;
    border-radius: 100%;
    display: flex;
    align-items: center;
@@ -300,4 +313,14 @@ export const AttracTiontitle = styled.h3`
 `
 export const TextInfo = styled.p`
    color: #888;
+`
+export const ColumnTitle = styled.h3`
+  font-size: 20px;
+  color: #015ea7;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  text-align: center;
+`
+export const GridSideColumn = styled.div`
+   width: 100%;
 `
