@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // src/pages/Home.tsx
 import React, { useEffect, useRef, useState } from 'react';
 import { FaChevronLeft, FaChevronRight, FaThumbsUp, FaInfo, FaCogs, FaDollarSign } from 'react-icons/fa';
@@ -12,12 +13,6 @@ import {
   PrevButton,
   NextButton,
   CardCarousel,
-  CardSlider,
-  Card,
-  ImageBox,
-  Span,
-  Text,
-  TitleText,
   MainCard,
   MainColumn,
   NewsGrid,
@@ -34,15 +29,13 @@ import {
   ColumnTitle,
   GridSideColumn,
 } from '../Style/HomeStyle';
-import { NewsItem, PanelData, SlideData } from '../types/interface';
-import { api } from '../API/api';
+import { NewsItem, PanelData } from '../types/interface';
+import { api, fetchHotReal, fetchPanels } from '../API/api';
+import PostList from '../Component/PostNew';
 
 const Home: React.FC = () => {
   const [panels, setPanels]     = useState<PanelData[]>([]);
   const [panelIndex, setPanelIndex] = useState(0);
-
-  const [slides, setSlides]     = useState<SlideData[]>([]);
-  const [slideIndex, setSlideIndex] = useState(0);
 
   const [news, setNews]         = useState<NewsItem[]>([]);
   const [loadingNews, setLoadingNews] = useState(true);
@@ -51,13 +44,16 @@ const Home: React.FC = () => {
   const scrollToPanel = () => panelRef.current?.scrollIntoView({ behavior: 'smooth' });
 
   // Fetch panels
+  const loadPanels = async () => {
+    try {
+      const data = await fetchPanels();
+      setPanels(data.sort((a, b) => a.sort_order - b.sort_order));
+    } catch (err) {
+      console.error('Lỗi fetch panels:', err);
+    }
+  }
   useEffect(() => {
-    api.get<{ data: PanelData[] }>('/panels')
-      .then(res => {
-        const arr = res.data.data || [];
-        setPanels(arr.sort((a, b) => a.sort_order - b.sort_order));
-      })
-      .catch(console.error);
+    loadPanels();
   }, []);
 
   // Auto-cycle panels every 5s
@@ -69,25 +65,19 @@ const Home: React.FC = () => {
     return () => clearInterval(iv);
   }, [panels]);
 
-  // Fetch slides
-//   useEffect(() => {
-//     api.get<{ data: SlideData[] }>('/slides')
-//       .then(res => {
-//         const arr = res.data.data || [];
-//         setSlides(arr.sort((a, b) => a.sort_order - b.sort_order));
-//       })
-//       .catch(console.error);
-//   }, []);
 
   // Fetch RSS hot-real
+  const fetchNews = async () => {
+    try{
+      const data = await fetchHotReal();
+      setNews(data);
+      setLoadingNews(false);
+    } catch (err) {
+      console.error('Lỗi fetch news:', err);
+    }
+  }
   useEffect(() => {
-    setLoadingNews(true);
-    api.get<{ data: NewsItem[] }>('/rss/hot-real')
-      .then(res => {
-        setNews(res.data.data || []);
-      })
-      .catch(console.error)
-      .finally(() => setLoadingNews(false));
+    fetchNews();
   }, []);
 
   // Pagination / slicing
@@ -97,12 +87,6 @@ const Home: React.FC = () => {
   // Panel controls
   const prevPanel = () => setPanelIndex(i => Math.max(i - 1, 0));
   const nextPanel = () => setPanelIndex(i => Math.min(i + 1, panels.length - 1));
-
-  // Slide controls
-  const visibleCount = 4;
-  const pageCount = Math.ceil(slides.length / visibleCount);
-  const prevSlide = () => setSlideIndex(i => (i - 1 + pageCount) % pageCount);
-  const nextSlide = () => setSlideIndex(i => (i + 1) % pageCount);
 
   return (
     <Background>
@@ -125,17 +109,7 @@ const Home: React.FC = () => {
       {/* Slides (projects) */}
       <Title>DỰ ÁN ĐANG MỞ BÁN</Title>
       <CardCarousel>
-        <CardSlider $index={slideIndex}>
-          {slides.map(s => (
-            <Card key={s.id}>
-              <ImageBox $url={s.image_url} />
-              <TitleText>{s.title}</TitleText>
-              <Text>Giá từ: <Span>{s.price}</Span></Text>
-            </Card>
-          ))}
-        </CardSlider>
-        <PrevButton onClick={prevSlide}><FaChevronLeft/></PrevButton>
-        <NextButton onClick={nextSlide}><FaChevronRight/></NextButton>
+        <PostList />
       </CardCarousel>
 
       {/* News */}

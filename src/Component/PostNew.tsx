@@ -1,85 +1,47 @@
-// src/Component/PostList.tsx
+
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { api } from "../API/api";
+import { fetchPosts, PostDTO } from "../API/api";
 import { Link } from "react-router-dom";
 
-interface PostRow {
-  id:           string;
-  title:        string;
-  description:  string;
-  propertyType: string;
-  price:        number;
-  area:         number;
-  address: {
-    provinceCode: string;
-    provinceName: string;
-    districtCode: string;
-    districtName: string;
-    wardCode:     string;
-    wardName:     string;
-    street:       string;
-  };
-  images:       string[];    // luôn là mảng URL (relative or absolute)
-  createdAt:    string;
-}
-
 const PostList: React.FC = () => {
-  const [posts, setPosts]     = useState<PostRow[]>([]);
+  const [posts, setPosts]     = useState<PostDTO[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState<string | null>(null);
 
   useEffect(() => {
-    api.get<PostRow[]>("/posts")
-      .then(res => {
-        setPosts(res.data);
-        setLoading(false);
-      })
-      .catch(err => {
+    fetchPosts()
+      .then((data) => setPosts(data))
+      .catch((err) => {
         console.error("Lỗi fetch posts:", err);
         setError("Không thể tải danh sách bài đăng.");
+      })
+      .finally(() => {
         setLoading(false);
       });
   }, []);
 
-  if (loading) {
-    return (
-      <Container>
-        <Message>Đang tải bài đăng…</Message>
-      </Container>
-    );
-  }
-
-  if (error) {
-    return (
-      <Container>
-        <MessageError>{error}</MessageError>
-      </Container>
-    );
-  }
-
-  if (posts.length === 0) {
-    return (
-      <Container>
-        <Message>Chưa có bài đăng nào.</Message>
-      </Container>
-    );
-  }
+  if (loading) return <Container><Message>Loading…</Message></Container>;
+  if (error)   return <Container><MessageError>{error}</MessageError></Container>;
+  if (posts.length === 0) return <Container><Message>Chưa có bài đăng nào.</Message></Container>;
 
   return (
     <Container>
       <Grid>
-        {posts.map(post => {
-          const thumbUrl = post.images[0] || "";
+        {posts.map((post) => {
+          const img = post.images?.[0];
+          // nếu bạn store data base64, src phải là `data:${img.contentType};base64,${img.data}`
+          const thumbUrl = img
+            ? img.data.startsWith("data:")
+              ? img.data
+              : `data:${img.contentType};base64,${img.data}`
+            : "";
 
           return (
             <Card key={post.id}>
-              <Link to={`/post/${post.id}`} style={{ textDecoration: "none", color: "inherit" }}>
-                {thumbUrl ? (
-                  <Image src={thumbUrl} alt={post.title} />
-                ) : (
-                  <Placeholder>No Image</Placeholder>
-                )}
+              <Link to={`/api/post/${post.id}`} style={{ textDecoration: "none", color: "inherit" }}>
+                {thumbUrl ? <Image src={thumbUrl} alt={post.title} />
+                          : <Placeholder>No Image</Placeholder>}
                 <CardBody>
                   <Title>{post.title}</Title>
                   <Meta>
@@ -95,7 +57,7 @@ const PostList: React.FC = () => {
                     {new Date(post.createdAt).toLocaleDateString("vi-VN", {
                       day:   "2-digit",
                       month: "2-digit",
-                      year:  "numeric"
+                      year:  "numeric",
                     })}
                   </DateStr>
                 </CardBody>
@@ -110,10 +72,12 @@ const PostList: React.FC = () => {
 
 export default PostList;
 
+/* ...styled components unchanged... */
+
+
 /* ===== Styled Components ===== */
 
 const Container = styled.div`
-  margin-top: 100px;
   padding: 16px;
   max-width: 1000px;
   margin-left: auto;
@@ -139,14 +103,16 @@ const Grid = styled.div`
 const Card = styled.div`
   background: #fff;
   border: 1px solid #ddd;
-  border-radius: 6px;
+  border-radius: 4px;
   overflow: hidden;
   box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
   cursor: pointer;
+  width: 300px;
+  height:100%;
   transition: border-color 0.15s ease-in-out, transform 0.15s;
   &:hover {
-    border-color: #ff6600;
-    transform: translateY(-3px);
+    border-bottom: 2px solid #ff6600;
+    /* transform: translateY(-3px); */
   }
 `;
 

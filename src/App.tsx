@@ -29,7 +29,6 @@ const App: React.FC = () => {
                <Route path="dang-bai" element={<PostCreate />}/>
                <Route path="/post/:id" element={<PostDetail />} />
                <Route path="panels"     element={<AdminPanel />} />
-               {/* <Route path="slides"     element={<AdminSlides />} /> */}
                <Route path="news-feeds" element={<NewFeeds />} />
             </Route>
          </Routes>

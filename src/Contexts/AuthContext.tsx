@@ -58,7 +58,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       try {
         const profile = await getMe();
         setUser(profile);
-        console.log('[Auth] Profile fetched:', profile);
+      //   console.log('[Auth] Profile fetched:', profile);
       } catch (err) {
         console.error('Fetch profile error:', err);
         // 401 hoặc không xác thực thì logout

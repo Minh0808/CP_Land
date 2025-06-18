@@ -73,8 +73,8 @@ export const ModalChatbox = styled.div`
    background-repeat: no-repeat;
 `
 export const LogoFooter = styled.img`
-   width: 250px;
-   height: 150px;
+   width: 230px;
+   height: 120px;
    margin-top: 50px;
 `
 export const Footer = styled.div`
@@ -83,10 +83,13 @@ export const Footer = styled.div`
    flex-direction: row;
    justify-content: center;
    padding-bottom: 50px;
+   align-items: center;
    gap: 100px;   
 `
 export const InforFooter = styled.div`
-   
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
 `
 export const InforItem = styled.p`
    padding-top: 20px;

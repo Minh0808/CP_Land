@@ -58,41 +58,49 @@ const AdminPanel: React.FC = () => {
   };
 
   const handleSave = async () => {
-    if (!editing) return;
+  if (!editing) return;
 
-    try {
-      let panel: Panel;
-      if (file) {
-        // upload file
-        const form = new FormData();
-        form.append('file', file);
-        form.append('sort_order', String(editing.sort_order || 0));
-        if (editing.id) {
-          panel = await updatePanel(editing.id, form);
-        } else {
-          panel = await createPanel(form);
-        }
-      } else {
-        // sử dụng URL
-        const payload = {
-          image_url:  editing.image_url!,
-          sort_order: editing.sort_order,
-        };
-        if (editing.id) {
-          panel = await updatePanel(editing.id, payload);
-        } else {
-          panel = await createPanel(payload);
-        }
+  try {
+    let panel: Panel;
+
+    if (file) {
+      const form = new FormData();
+      form.append('file', file);
+      form.append('sort_order', String(editing.sort_order || 0));
+      panel = editing.id
+        ? await updatePanel(editing.id, form)
+        : await createPanel(form);
+    } else {
+      if (!editing.image_url) {
+        return alert('Vui lòng upload file hoặc nhập URL ảnh');
       }
-      // xong, refresh
-      setEditing(null);
-      setFile(null);
-      await loadPanels();
-    } catch (err: any) {
-      console.error('Lỗi lưu panel:', err);
-      alert(err.message || 'Lưu panel thất bại');
+      const payload = {
+        image_url: editing.image_url,
+        sort_order: editing.sort_order || 0,
+      };
+      panel = editing.id
+        ? await updatePanel(editing.id, payload)
+        : await createPanel(payload);
     }
-  };
+
+    // DÙNG panel để cập nhật state
+    setPanels(prev => {
+      // nếu update thì replace, nếu create thì thêm và sort lại
+      const next = editing.id
+        ? prev.map(p => (p.id === panel.id ? panel : p))
+        : [...prev, panel];
+      return next.sort((a, b) => a.sort_order - b.sort_order);
+    });
+
+    setEditing(null);
+    setFile(null);
+  } catch (err) {
+    console.error('Lỗi lưu panel:', err);
+  }
+};
+
+
+
 
   // 3) quyền admin
   if (user?.role !== 'admin') {
@@ -149,7 +157,7 @@ const AdminPanel: React.FC = () => {
                 />
               </label>
               <Button onClick={handleSave}>Lưu</Button>
-              <Button alt onClick={() => setEditing(null)}>Hủy</Button>
+              <Button $alt onClick={() => setEditing(null)}>Hủy</Button>
             </Form>
           </Dialog>
         </Modal>
@@ -166,8 +174,8 @@ const Container = styled.div`
   text-align: center;
   button { margin: 30px; border-radius: 5px; font-size: 16px; }
 `;
-const Button = styled.button<{ alt?: boolean }>`
-  background: ${({ alt }) => (alt ? '#ccc' : '#00539c')};
+const Button = styled.button<{ $alt?: boolean }>`
+  background: ${({ $alt }) => ($alt ? '#ccc' : '#00539c')};
   color: white;
   padding: 8px 12px;
   border: none;

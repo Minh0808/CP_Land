@@ -48,27 +48,27 @@ const Playout: React.FC = () => {
         <LogoFooter src={Logo} alt="Logo CP Land Footer" />
         <InforFooter>
           <InforItem>
-            <MdMapsHomeWork color="#0b6acb"/>Công ty cổ phần CP-Land
+            <MdMapsHomeWork color="white" size={25}/>Công ty cổ phần CP-Land
          </InforItem>
           <InforItem>
-            <LiaMapMarkedAltSolid color="rgb(2 247 234)"/>Địa chỉ: Thôn Đống Vừng, Yên Sơn, Lục Nam, Bắc Giang
+            <LiaMapMarkedAltSolid color="white" size={25}/>Địa chỉ: Thôn Đống Vừng, Yên Sơn, Lục Nam, Bắc Giang
          </InforItem>
           <InforItem>
-            <MdDocumentScanner color="#8e0505"/>MST: xxxxxxxx
+            <MdDocumentScanner color="white" size={25}/>MST: xxxxxxxx
          </InforItem>
         </InforFooter>
         <InforFooter>
           <InforItem>
-            <PiVibrateLight color="#00f260"/>tel: xxxxx
+            <PiVibrateLight color="white" size={25}/>tel: xxxxx
          </InforItem>
           <InforItem>
-            <MdOutlineFax color="#003d67"/>Fax: xxx
+            <MdOutlineFax color="white" size={25}/>Fax: xxx
          </InforItem>
           <InforItem>
-            <AiOutlineGlobal color="#d40369"/>Wedsite: CP-Land.com.vn
+            <AiOutlineGlobal color="white" size={25}/>Wedsite: CP-Land.com.vn
          </InforItem>
           <InforItem>
-            <AiOutlineMail color="rgb(171 3 199)"/>Email: xxx
+            <AiOutlineMail color="white" size={25}/>Email: xxx
          </InforItem>
         </InforFooter>
       </Footer>

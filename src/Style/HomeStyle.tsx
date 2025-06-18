@@ -1,17 +1,17 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // src/Style/HomeStyle.tsx
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 
 export const Background = styled.div`
-  /* … */
+  padding-top: 0px;
 `
 
 export const SliderWrapper = styled.div`
-  width: 100%;
+  width: 80%;
   height: 500px;
   overflow: hidden;
   position: relative;
   margin: auto;
-
   button {
     display: none;
   }
@@ -151,6 +151,7 @@ export const Span = styled.span`
 export const Title = styled.h1`
   text-align: center;
   color: #015ea7;
+  font-size: 30px;
   padding-top: 30px;
 `
 export const NewsSection = styled.section`

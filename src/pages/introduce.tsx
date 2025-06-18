@@ -61,6 +61,8 @@ const Title = styled.h1`
    padding-top: 50px;
    color: #015ea7;
    text-align: center;
+   font-size: 30px;
+   font-weight: bold;
 `
 const Text = styled.p`
    padding-top: 15px;
@@ -117,13 +119,15 @@ const TimelineBlock = styled.div<EvenProp>`
     height: 16px;
     background: #d88a33;
     border-radius: 50%;
-    transform: translateX(-50%);
-    top: 0;
+    transform: translate(-50%, -100%);
+    top: 0px;
+    z-index: 1;
   }
 
   @media (min-width: 768px) {
     flex-direction: row;
     justify-content: ${({ $even }) => ($even ? 'flex-start' : 'flex-end')};
+
   }
 `
 
@@ -137,11 +141,15 @@ const Year = styled.div<EvenProp>`
   padding: 4px 10px;
   border-radius: 4px;
   font-weight: bold;
-  z-index: 2;
+  /* z-index: 2; */
 
   @media (min-width: 768px) {
-    left: ${({ $even }) => ($even ? 'calc(50% - 360px)' : 'calc(50% + 360px)')};
-  }
+  left: ${({ $even }) =>
+    $even
+      ? `calc(50% - (360px / 2) - 24px)`   // dịch sang trái một nửa width content + margin
+      : `calc(56% + (360px / 2) + 24px)`}; // dịch sang phải tương tự
+  transform: translateX(-50%);
+}
 `
 
 const Content = styled.div`

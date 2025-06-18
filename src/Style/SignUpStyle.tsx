@@ -17,7 +17,7 @@ export const zoomOut  = keyframes`
    from { transform: scale(1);   opacity: 1; } 
    to { transform: scale(0.9); opacity: 0; }
 `
-export const Background = styled.div <{ closing?: boolean }>`
+export const Background = styled.div <{ $closing?: boolean }>`
    position: fixed;
    top: 0; left: 0;
    width: 100vw;
@@ -27,9 +27,9 @@ export const Background = styled.div <{ closing?: boolean }>`
    align-items: center;
    justify-content: center;
    z-index: 1000;
-   animation: ${({ closing }) => closing ? fadeOut : fadeIn} 2s ease forwards;
+   animation: ${({ $closing }) => $closing ? fadeOut : fadeIn} 2s ease forwards;
 `
-export const ModalContainer = styled.div <{ closing?: boolean }> `
+export const ModalContainer = styled.div <{ $closing?: boolean }> `
    background: #295a9e;
    border-radius: 4px;
    position: relative;
@@ -39,7 +39,7 @@ export const ModalContainer = styled.div <{ closing?: boolean }> `
    padding: 25px;
    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
    color: #fff;
-   animation: ${({ closing }) => closing ? zoomOut : zoomIn} 2s ease-out forwards;
+   animation: ${({ $closing }) =>( $closing ? zoomOut : zoomIn)} 2s ease-out forwards;
 `
 export const CloseButton = styled.div`
    position: absolute;
@@ -79,6 +79,8 @@ export const Input = styled.input`
    height: 35px;
    padding: 5px;
    font-size: 16px;
+   background: white;
+   color: black;
 `
 export const Button = styled.button`
    width: 180px;

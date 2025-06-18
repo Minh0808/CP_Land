@@ -9,7 +9,8 @@ import {
   Title,
   Title2
 } from '../Style/SignUpStyle';
-import { api } from '../API/api';
+import { signup } from '../API/api';
+import axios from 'axios';
 
 interface Props {
   onClose(): void;
@@ -35,29 +36,27 @@ const ModalSignUp: React.FC<Props> = ({ onClose }) => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setError(null);
-    setSuccess(null);
-
     if (!email || !phone) {
-      setError('Vui lòng điền đầy đủ email và số điện thoại.');
+      setError('Vui lòng điền email và số điện thoại.');
       return;
     }
-
     setLoading(true);
     try {
-      // Gửi qua instance axios `api` đã được config baseURL + withCredentials
-      const res = await api.post<{ message: string }>('/signup', { email, phone });
-
-      // Thành công
-      setSuccess(res.data.message || 'Đăng ký thành công!');
+      await signup(email, phone);
+      setSuccess('Đăng ký thành công!');
       setEmail('');
       setPhone('');
-
-      // Tự đóng modal sau 1.5s
       setTimeout(handleClose, 1500);
-    } catch (err: any) {
-      // Axios trả lỗi
-      const msg = err.response?.data?.message || err.message || 'Có lỗi xảy ra.';
+    } catch ( err: unknown) {
+      let msg = 'Đăng ký thất bại.';
+      // nếu err là AxiosError
+      if (axios.isAxiosError(err)) {
+         msg = err.response?.data?.message || err.message;
+      }
+      // nếu err là Error bình thường
+      else if (err instanceof Error) {
+         msg = err.message;
+      }
       setError(msg);
     } finally {
       setLoading(false);
@@ -65,9 +64,9 @@ const ModalSignUp: React.FC<Props> = ({ onClose }) => {
   };
 
   return (
-    <Background closing={closing} onClick={handleClose}>
+    <Background $closing={closing} onClick={handleClose}>
       <ModalContainer
-        closing={closing}
+        $closing={closing}
         onClick={e => e.stopPropagation()}
       >
         <CloseButton onClick={handleClose}>&times;</CloseButton>

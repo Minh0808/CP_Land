@@ -131,7 +131,7 @@ const SuKien: React.FC = () => {
       setMessage('Đăng ký tham dự thành công! Bạn sẽ nhận ưu đãi giảm giá 10% + quà tặng.');
       setIsSuccess(true);
       setFormData({ fullName: '', phone: '', email: '' });
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
       setMessage('Có lỗi xảy ra khi đăng ký. Vui lòng thử lại sau.');
       setIsSuccess(false);

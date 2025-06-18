@@ -3,7 +3,6 @@ import React, { useState, useRef, useEffect, useContext } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import IconLogo from "../assets/Logo.png";
 import { styled } from 'styled-components';
-import { FaEnvelope, FaFacebookF, FaInstagram, FaTwitter } from 'react-icons/fa';
 import { AuthContext } from '../Contexts/AuthContext';
 
 const Navigation: React.FC = () => {
@@ -47,7 +46,6 @@ const Navigation: React.FC = () => {
             {openAdminMenu && (
               <Submenu>
                 <NavLink to="/panels" onClick={() => setOpenAdminMenu(false)}>Thêm Panel</NavLink>
-                <NavLink to="/slides" onClick={() => setOpenAdminMenu(false)}>Thêm Slide</NavLink>
                 <NavLink to="/dang-bai" onClick={() => setOpenAdminMenu(false)}>Đăng Bài</NavLink>
               </Submenu>
             )}
@@ -97,10 +95,10 @@ const Background = styled.div`
 const LogoImg = styled.img`
   /* width: 200px;
   height: 100px; */
-  width: 120px;
-  height: 70px;
+  width: 100px;
+  height: 50px;
   position: absolute;
-  top: 1%;
+  top: 13%;
   left: 5rem;
 `;
 const Nav = styled.nav`

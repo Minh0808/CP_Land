@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // src/API/api.ts
 import axios from 'axios'
 
@@ -30,12 +31,24 @@ export interface Panel {
 }
 
 export interface SignupDTO {
-   name:      string
   email:     string
   phone:     string
   createdAt: string
 }
 
+export interface IImage {
+  data: string    // base64 hoặc mảng số byte
+  contentType: string
+}
+export interface AddressDTO {
+  provinceCode: string
+  provinceName: string
+  districtCode: string
+  districtName: string
+  wardCode:     string
+  wardName:     string
+  street:       string
+}
 export interface PostDTO {
   id:           string
   title:        string
@@ -43,14 +56,14 @@ export interface PostDTO {
   propertyType: string
   price:        number
   area:         number
-  address:      any
-  images:       string[]
+  address:      AddressDTO
+  images: IImage[]
   createdAt:    string
   updatedAt?:   string
 }
 
 export interface ChatResponse {
-  reply: string
+  reply: string;
 }
 
 export interface UserDTO {
@@ -200,11 +213,10 @@ export async function deletePanel(id: string): Promise<void> {
  * Đăng ký (chỉ email + phone)
  */
 export async function signup(
-   name: string,
   email: string,
   phone: string
 ): Promise<SignupDTO> {
-  const res = await api.post<Wrapped<SignupDTO>>('/api/signup', {name, email, phone })
+  const res = await api.post<Wrapped<SignupDTO>>('/api/signup', { email, phone })
   if (!res.data.data) {
     throw new Error(res.data.message || 'Signup thất bại')
   }
@@ -217,15 +229,29 @@ export async function signup(
  * Lấy danh sách bài đăng
  */
 export async function fetchPosts(): Promise<PostDTO[]> {
-  const res = await api.get<Wrapped<PostDTO[]>>('/posts')
-  return res.data.data || []
+  const res = await api.get<Wrapped<any[]>>('/api/posts');
+  const arr = res.data.data || [];
+
+  return arr.map(item => ({
+    id:           item.id,      // <-- map _id về id
+    title:        item.title,
+    description:  item.description,
+    propertyType: item.propertyType,
+    price:        item.price,
+    area:         item.area,
+    address:      item.address,
+    images:       item.images,
+    createdAt:    item.createdAt,
+    updatedAt:    item.updatedAt,
+  }));
 }
+
 
 /**
  * Lấy chi tiết 1 bài theo ID
  */
 export async function fetchPostById(id: string): Promise<PostDTO> {
-  const res = await api.get<Wrapped<PostDTO>>(`/posts/${id}`)
+  const res = await api.get<Wrapped<PostDTO>>(`/api/posts/${id}`)
   if (!res.data.data) {
     throw new Error(res.data.message || 'Không tìm thấy')
   }
@@ -236,13 +262,17 @@ export async function fetchPostById(id: string): Promise<PostDTO> {
  * Tạo bài đăng mới
  */
 export async function createPost(
-  payload: Omit<PostDTO, 'id' | 'createdAt' | 'updatedAt'>
+  formData: FormData
 ): Promise<PostDTO> {
-  const res = await api.post<Wrapped<PostDTO>>('/posts', payload)
+  const res = await api.post<Wrapped<PostDTO>>(
+    '/api/posts',
+    formData
+  )
+
   if (!res.data.data) {
-    throw new Error(res.data.message || 'Tạo bài đăng thất bại')
+    throw new Error(res.data.message || 'Tạo bài đăng thất bại');
   }
-  return res.data.data
+  return res.data.data;
 }
 
 // --- CHAT --- //
@@ -250,7 +280,40 @@ export async function createPost(
 /**
  * Gửi tin nhắn chat
  */
-export async function sendChatMessage(message: string): Promise<ChatResponse> {
-  const res = await api.post<ChatResponse>('/chatbox', { message })
-  return res.data
+export async function sendChatMessage(
+  message: string
+): Promise<ChatResponse> {
+  // 1) Khai báo đúng generic Wrapped<ChatResponse>
+  const res = await api.post<Wrapped<ChatResponse>>(
+    '/chatbox',
+    { message }
+  );
+
+  // 2) Check wrapper.data
+  if (!res.data.data) {
+    // res.data.message là thông báo từ server
+    throw new Error(res.data.message || 'Chat thất bại');
+  }
+
+  // 3) Trả về phần chat payload
+  return res.data.data;
+}
+
+export async function editPost(id: string, formData: FormData): Promise<PostDTO> {
+  const res = await api.put<Wrapped<PostDTO>>(
+    `/posts/${id}`,
+    formData,
+    { headers: { 'Content-Type': 'multipart/form-data' } }
+  )
+  if (!res.data.data) {
+    throw new Error(res.data.message || 'Cập nhật bài đăng thất bại')
+  }
+  return res.data.data
+}
+
+export async function deletePost(id: string): Promise<void> {
+  const res = await api.delete<Wrapped<null>>(`/api/posts/${id}`)
+  if (!res.data.status) {
+    throw new Error(res.data.message || 'Xóa bài đăng thất bại')
+  }
 }

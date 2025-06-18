@@ -39,7 +39,7 @@ const PostDetail: React.FC = () => {
       setLoading(false);
       return;
     }
-    api.get<PostRow>(`/posts/${id}`)
+    api.get<PostRow>(`/api/posts/${id}`)
       .then(res => setPost(res.data))
       .catch(err => {
         console.error("Lỗi fetch post:", err);
