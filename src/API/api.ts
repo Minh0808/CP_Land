@@ -301,7 +301,7 @@ export async function sendChatMessage(
 
 export async function editPost(id: string, formData: FormData): Promise<PostDTO> {
   const res = await api.put<Wrapped<PostDTO>>(
-    `/posts/${id}`,
+    `api/posts/${id}`,
     formData,
     { headers: { 'Content-Type': 'multipart/form-data' } }
   )

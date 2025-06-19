@@ -4,6 +4,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import IconLogo from "../assets/Logo.png";
 import { styled } from 'styled-components';
 import { AuthContext } from '../Contexts/AuthContext';
+import { FaEnvelope, FaFacebookF, FaInstagram, FaTwitter } from 'react-icons/fa';
 
 const Navigation: React.FC = () => {
   const { user, loading, logout } = useContext(AuthContext);
@@ -34,7 +35,6 @@ const Navigation: React.FC = () => {
         <NavLink to="/home">TRANG CHỦ</NavLink>
         <NavLink to="/introduce">GIỚI THIỆU</NavLink>
         <NavLink to="/du-an">DỰ ÁN</NavLink>
-        <NavLink to="/su-kien">SỰ KIỆN</NavLink>
         <NavLink to="/news-feeds">TIN TỨC</NavLink>
         <NavLink to="/lien-he">LIÊN HỆ</NavLink>
 
@@ -67,10 +67,10 @@ const Navigation: React.FC = () => {
                : <NavLink to="/login">ĐĂNG NHẬP</NavLink>
          )}
 
-         {/* <Link to="/"><FaFacebookF size={20} /></Link>
+         <Link to="/"><FaFacebookF size={20} /></Link>
          <Link to="/"><FaInstagram size={20} /></Link>
          <Link to="/"><FaTwitter size={20} /></Link>
-         <Link to="/"><FaEnvelope size={20} /></Link> */}
+         <Link to="/"><FaEnvelope size={20} /></Link>
       </Social>
     </Background>
   );
@@ -84,22 +84,20 @@ const Background = styled.div`
   position: fixed;
   top: 0;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   gap: 250px;
   padding: 0 20px;
-  background-color: #b38055;
+  background-color: #005a97;
   height: 65px;
   z-index: 2;
 `;
 const LogoImg = styled.img`
-  /* width: 200px;
-  height: 100px; */
-  width: 100px;
-  height: 50px;
+  width: 200px;
+  height: 100px;
   position: absolute;
   top: 13%;
-  left: 5rem;
+  left: 3rem;
 `;
 const Nav = styled.nav`
   display: flex;

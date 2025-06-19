@@ -1,10 +1,16 @@
+// src/Component/PostList.tsx
 
-import React, { useEffect, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import styled from "styled-components";
 import { fetchPosts, PostDTO } from "../API/api";
 import { Link } from "react-router-dom";
 
-const PostList: React.FC = () => {
+export interface PostListProps {
+  /** Nếu true thì hiển thị carousel ngang, ngược lại grid dọc */
+  horizontal?: boolean;
+}
+
+const PostList = forwardRef<HTMLDivElement, PostListProps>(({ horizontal }, ref) => {
   const [posts, setPosts]     = useState<PostDTO[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState<string | null>(null);
@@ -21,67 +27,108 @@ const PostList: React.FC = () => {
       });
   }, []);
 
-  if (loading) return <Container><Message>Loading…</Message></Container>;
-  if (error)   return <Container><MessageError>{error}</MessageError></Container>;
-  if (posts.length === 0) return <Container><Message>Chưa có bài đăng nào.</Message></Container>;
+  if (loading) {
+    return (
+      <Container horizontal={horizontal} ref={ref}>
+        <Message>Loading...</Message>
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container horizontal={horizontal} ref={ref}>
+        <MessageError>{error}</MessageError>
+      </Container>
+    );
+  }
+
+  if (posts.length === 0) {
+    return (
+      <Container horizontal={horizontal} ref={ref}>
+        <Message>Chưa có bài đăng nào.</Message>
+      </Container>
+    );
+  }
 
   return (
-    <Container>
-      <Grid>
-        {posts.map((post) => {
-          const img = post.images?.[0];
-          // nếu bạn store data base64, src phải là `data:${img.contentType};base64,${img.data}`
-          const thumbUrl = img
-            ? img.data.startsWith("data:")
-              ? img.data
-              : `data:${img.contentType};base64,${img.data}`
-            : "";
+    <Container horizontal={horizontal} ref={ref}>
+      {posts.map((post) => {
+        const img = post.images?.[0];
+        const thumbUrl = img
+          ? img.data.startsWith("data:")
+            ? img.data
+            : `data:${img.contentType};base64,${img.data}`
+          : "";
 
-          return (
-            <Card key={post.id}>
-              <Link to={`/api/post/${post.id}`} style={{ textDecoration: "none", color: "inherit" }}>
-                {thumbUrl ? <Image src={thumbUrl} alt={post.title} />
-                          : <Placeholder>No Image</Placeholder>}
-                <CardBody>
-                  <Title>{post.title}</Title>
-                  <Meta>
-                    <span>Giá: {post.price.toLocaleString()} ₫</span>
-                    <span>Diện tích: {post.area} m²</span>
-                  </Meta>
-                  <Address>
-                    {post.address.street && `${post.address.street}, `}
-                    {post.address.wardName}, {post.address.districtName}, {post.address.provinceName}
-                  </Address>
-                  <DateStr>
-                    Đăng ngày:{" "}
-                    {new Date(post.createdAt).toLocaleDateString("vi-VN", {
-                      day:   "2-digit",
-                      month: "2-digit",
-                      year:  "numeric",
-                    })}
-                  </DateStr>
-                </CardBody>
-              </Link>
-            </Card>
-          );
-        })}
-      </Grid>
+        return (
+          <Card key={post.id}>
+            <Link to={`/api/post/${post.id}`} style={{ textDecoration: "none", color: "inherit" }}>
+              {thumbUrl
+                ? <Image src={thumbUrl} alt={post.title} />
+                : <Placeholder>No Image</Placeholder>
+              }
+              <CardBody>
+                <Title>{post.title}</Title>
+                <Meta>
+                  <span>Giá: {post.price.toLocaleString()} ₫</span>
+                  <span>Diện tích: {post.area} m²</span>
+                </Meta>
+                <Address>
+                  {post.address.street && `${post.address.street}, `}
+                  {post.address.wardName}, {post.address.districtName}, {post.address.provinceName}
+                </Address>
+                <DateStr>
+                  Đăng ngày:{" "}
+                  {new Date(post.createdAt).toLocaleDateString("vi-VN", {
+                    day:   "2-digit",
+                    month: "2-digit",
+                    year:  "numeric",
+                  })}
+                </DateStr>
+              </CardBody>
+            </Link>
+          </Card>
+        );
+      })}
     </Container>
   );
-};
+});
 
 export default PostList;
 
-/* ...styled components unchanged... */
+/* =================== Styled Components =================== */
 
-
-/* ===== Styled Components ===== */
-
-const Container = styled.div`
+export const Container = styled.div<{ horizontal?: boolean }>`
   padding: 16px;
-  max-width: 1000px;
-  margin-left: auto;
-  margin-right: auto;
+  max-width: ${({ horizontal }) => (horizontal ? "100%" : "1000px")};
+  margin: ${({ horizontal }) => (horizontal ? "0" : "0 auto")};
+
+  display: ${({ horizontal }) => (horizontal ? "flex" : "grid")};
+  gap: 24px;
+
+  /* hidden native scrollbar */
+  ${({ horizontal }) =>
+    horizontal
+      ? `
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    
+    /* Ẩn scrollbar */
+    &::-webkit-scrollbar { display: none; }
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    & > * {
+      flex: 0 0 auto;            /* không co dãn, không thu nhỏ */
+      scroll-snap-align: start;  /* mỗi item sẽ snap */
+      width: 280px;              /* hoặc min-width tuỳ bạn */
+    }
+  `
+      : `
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  `}
 `;
 
 const Message = styled.p`
@@ -94,25 +141,18 @@ const MessageError = styled(Message)`
   color: red;
 `;
 
-const Grid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 24px;
-`;
-
 const Card = styled.div`
   background: #fff;
-  border: 1px solid #ddd;
+  border: 2px solid #ddd;
   border-radius: 4px;
   overflow: hidden;
-  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 0 5px #c4c4c4;
   cursor: pointer;
   width: 300px;
-  height:100%;
   transition: border-color 0.15s ease-in-out, transform 0.15s;
+
   &:hover {
     border-bottom: 2px solid #ff6600;
-    /* transform: translateY(-3px); */
   }
 `;
 

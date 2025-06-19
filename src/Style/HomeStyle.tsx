@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-// src/Style/HomeStyle.tsx
+
 import styled from 'styled-components'
 
 export const Background = styled.div`
@@ -7,7 +6,7 @@ export const Background = styled.div`
 `
 
 export const SliderWrapper = styled.div`
-  width: 80%;
+  width: 100%;
   height: 500px;
   overflow: hidden;
   position: relative;
@@ -88,7 +87,7 @@ export const CardCarousel = styled.div`
   overflow-x: hidden;
   overflow-y: visible;
   margin: 20px auto;
-  max-width: 1200px;
+  max-width: 1280px;
   height: 100%;
   button {
     display: none;
@@ -282,7 +281,7 @@ export const AttractionInfor = styled.div`
 export const Icon = styled.a`
    width: 87px;
    height: 87px;
-   border: 3px solid #f70101;
+   border: 3px solid #e8e8e8;
    border-radius: 100%;
    display: flex;
    align-items: center;

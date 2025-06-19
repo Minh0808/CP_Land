@@ -1,8 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-// src/pages/PostCreate.tsx
 
-import React, { useEffect, useState, ChangeEvent, FormEvent } from "react";
+import React, { useEffect, useState, ChangeEvent, FormEvent, useRef } from "react";
 import styled from "styled-components";
 import { createPost, deletePost, editPost, fetchPosts, PostDTO } from "../API/api";
 import { ProvinceItem, DistrictItem, WardItem } from "../types/interface";
@@ -57,7 +54,7 @@ const PostCreate: React.FC = () => {
     const [error, setError]     = useState<string | null>(null);
     const [editId, setEditId] = useState<string | null>(null);
     const [refreshCount, setRefreshCount] = useState(0);
-
+   const formRef = useRef<HTMLDivElement>(null);
   // 2. State cho địa chỉ (3 cấp)
   const [allProvinces, setAllProvinces] = useState<ProvinceItem[]>([]);
   const [allDistricts, setAllDistricts] = useState<DistrictItem[]>([]);
@@ -213,9 +210,29 @@ const PostCreate: React.FC = () => {
 
       // BẬT lại effect fetch
       setRefreshCount(c => c + 1);
-    } catch (err: any) {
-      alert(err.message || "Có lỗi xảy ra");
+    } catch (error) {
+      console.error("Lỗi tạo bài đăng:", error);
+      alert("Tạo bài đăng thất bại");
     }
+  };
+
+  const resetForm = () => {
+    setTitle("");
+    setDescription("");
+    setPropertyType("");
+    setPrice("");
+    setArea("");
+    setAddress({
+      provinceCode: "",
+      provinceName: "",
+      districtCode: "",
+      districtName: "",
+      wardCode: "",
+      wardName: "",
+      street: "",
+    })
+    setFiles([]);
+    setEditId(null);
   };
 
   // 9. Hủy form
@@ -237,6 +254,7 @@ const PostCreate: React.FC = () => {
       .finally(() => {
         setLoading(false);
       });
+      resetForm();
   }, [refreshCount])
 
     const handleEditClick = (posts: PostDTO) => {
@@ -274,9 +292,36 @@ const PostCreate: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    function onDocumentClick(e: MouseEvent) {
+      // Nếu đang show form và click ngoài formRef
+      if (showForm && formRef.current && !formRef.current.contains(e.target as Node)) {
+        handleCancel();
+      }
+    }
+
+    document.addEventListener("mousedown", onDocumentClick);
+    return () => {
+      document.removeEventListener("mousedown", onDocumentClick);
+    };
+  }, [showForm]);
+
   return (
     <OuterContainer>
       <Grid>
+         {loading && (
+            <div>
+            {/* ở đây bạn có thể thay bằng spinner */}
+            <p>Đang tải danh sách bài đăng...</p>
+            </div>
+         )}
+
+         {/* 2. Nếu có error thì show lỗi */}
+         {!loading && error && (
+            <div>
+            <p style={{ color: "red" }}>{error}</p>
+            </div>
+         )}
          {posts.map((post) => {
           const img = post.images?.[0];
           const thumbUrl = img
@@ -317,7 +362,6 @@ const PostCreate: React.FC = () => {
                      </ActionBtnDelete>
                   </Actions>
                 </CardBody>
-
             </Card>
           );
         })}
@@ -328,7 +372,7 @@ const PostCreate: React.FC = () => {
         </OpenBtn>
       )}
       {showForm && (
-        <FormContainer>
+        <FormContainer ref={formRef}>
           <h2>Đăng bán bất động sản</h2>
           <Form onSubmit={handleSubmit}>
             {/* 1) Tiêu đề */}
@@ -540,7 +584,7 @@ export default PostCreate;
 /* ==================== Styled Components ==================== */
 
 const OuterContainer = styled.div`
-  max-width: 800px;
+  max-width: 80%;
   margin: 40px auto;
   padding: 0 16px;
 `;
@@ -558,14 +602,19 @@ const OpenBtn = styled.button`
 `;
 
 const FormContainer = styled.div`
-  margin-bottom: 24px;
+  position: fixed;
+  top: 64px;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 47%;
   padding: 24px;
   background-color: #fdfdfd;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  position: relative;
-z-index: 1;
+  overflow-y: auto;
 `;
+
 
 const Form = styled.form`
   display: flex;
@@ -732,7 +781,7 @@ const ActionBtnDelete = styled(ActionBtn)`
 `;
 const Card = styled.div`
   background: #fff;
-  border: 1px solid #ddd;
+  border: 2px solid #ddd;
   border-radius: 4px;
   overflow: hidden;
   box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
@@ -742,7 +791,6 @@ const Card = styled.div`
   transition: border-color 0.15s ease-in-out, transform 0.15s;
   &:hover {
     border-bottom: 2px solid #ff6600;
-    /* transform: translateY(-3px); */
   }
 `;
 
@@ -799,6 +847,6 @@ const DateStr = styled.p`
 `;
 const Grid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 24px;
 `;

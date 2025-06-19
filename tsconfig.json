@@ -1,7 +1,44 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
+  "compilerOptions": {
+    // — Thư mục nguồn và đích chung
+    "rootDir": "./src",
+    "outDir": "./dist",
+
+    // — Cho phép import từ src như base
+    "baseUrl": "./src",
+    "paths": {
+      "types/*": ["types/*"]
+    },
+
+    // — Target và module cho Node/ESM
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "node",
+
+    // — Xuất ra JS + declaration  
+    "declaration": true,
+    "emitDeclarationOnly": false,
+
+    // — JSX cho React
+    "jsx": "react-jsx",
+    "useDefineForClassFields": true,
+
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    // — Kiểm tra nghiêm ngặt
+    "strict": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+
+    // — Map để debug (tuỳ chọn)
+    "sourceMap": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }

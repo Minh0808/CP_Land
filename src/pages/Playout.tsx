@@ -1,5 +1,5 @@
 // src/components/Playout.tsx
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import { Outlet } from "react-router-dom"
 import Logo from "../assets/Logo.png"
 import ModalSignUp from '../Component/Signup'
@@ -14,9 +14,7 @@ import {
    ModalChatbox,
    ModalGroup,
 } from "../Style/PlayoutStyle"
-import ModalQC, { Img, Title } from '../Component/Modal'
-import DHVPanel from '../assets/image/dhv.webp'
-import LogoDHV from '../assets/image/logo.webp'
+
 import ChatBox from '../Component/Chatbox'
 import Navigation from '../Component/navigation'
 import { AiOutlineGlobal, AiOutlineMail } from "react-icons/ai"
@@ -27,14 +25,7 @@ import { LiaMapMarkedAltSolid } from "react-icons/lia"
 
 const Playout: React.FC = () => {
    const [open, setOpen] = useState(false)
-   const [isModalOpen, setIsModalOpen] = useState(true)
    const [chatOpen, setChatOpen] = useState(false)
-   const [hasToken, setHasToken] = useState<boolean>(false)
-
-   useEffect(() => {
-      const token = localStorage.getItem('token')
-      setHasToken(!!token)
-   }, [])
 
   return (
     <Background>
@@ -78,17 +69,6 @@ const Playout: React.FC = () => {
          {open && <ModalSignUp onClose={() => setOpen(false)} />}
          {chatOpen && <ChatBox onClose={() => setChatOpen(false)} />}
       </ModalGroup>
-      
-
-      <ModalQC isOpen={isModalOpen && !hasToken} onClose={() => setIsModalOpen(false)}>
-        <Title>
-          <div className="marquee">
-            <img src={LogoDHV} alt="Logo DHV" />
-            <span>Chào mừng 30 năm thành lập trường ĐH Hùng Vương!</span>
-          </div>
-        </Title>
-        <Img src={DHVPanel} alt="Panel DHV" />
-      </ModalQC>
     </Background>
   )
 }

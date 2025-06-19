@@ -39,7 +39,7 @@ export const Modal = styled.div`
    width: 300px;
    height: 50px;
    margin-left: 50px;
-   background: #b38055;
+   background: #005a97;
    color: white;
    display: flex;
    align-items: center;
@@ -78,7 +78,7 @@ export const LogoFooter = styled.img`
    margin-top: 50px;
 `
 export const Footer = styled.div`
-   background-color: #b38055;
+   background-color: #005a97;
    display: flex;
    flex-direction: row;
    justify-content: center;

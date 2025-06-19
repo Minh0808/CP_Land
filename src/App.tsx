@@ -11,7 +11,6 @@ import Introduce from './pages/introduce';
 import Project from './pages/Project';
 import PostCreate from './pages/PostCreate';
 import PostDetail from './Component/PostDetail';
-import Event from './pages/event';
 import Contact from './pages/Contact';
 const App: React.FC = () => {
    return (
@@ -24,7 +23,6 @@ const App: React.FC = () => {
                <Route path="home"       element={<Home />} />
                <Route path="introduce" element={<Introduce />} />
                <Route path="du-an" element={<Project />}/>
-               <Route path="su-kien" element={<Event />}/>
                <Route path="lien-he" element={<Contact />}/>
                <Route path="dang-bai" element={<PostCreate />}/>
                <Route path="/post/:id" element={<PostDetail />} />
