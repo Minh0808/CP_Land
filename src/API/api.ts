@@ -2,12 +2,11 @@
 // src/API/api.ts
 import axios from 'axios'
 
-// Đọc biến môi trường từ Vite
-const isDev   = import.meta.env.DEV
-const API_URL = import.meta.env.VITE_API_URL
+// --- API --- //
 
-// Trong dev: gọi thẳng API_URL; production: gọi relative
-const baseURL = isDev ? `${API_URL}/` : '/'
+const baseURL = import.meta.env.DEV
+  ? `${import.meta.env.VITE_API_URL}/`
+  : '/'
 
 export const api = axios.create({
   baseURL,
@@ -34,6 +33,14 @@ export interface SignupDTO {
   email:     string
   phone:     string
   createdAt: string
+}
+
+export interface useMessDTO {
+   name: string
+   email: string
+   phone: string
+   messager: string
+   createdAt: string
 }
 
 export interface IImage {
@@ -223,6 +230,19 @@ export async function signup(
   return res.data.data
 }
 
+export async function sendMessage(
+  name: string,
+  email: string,
+  phone: string,
+  messager: string
+): Promise<useMessDTO> {
+  const res = await api.post<Wrapped<useMessDTO>>('/api/messager', {name, email, phone, messager })
+  if (!res.data.data) {
+    throw new Error(res.data.message || 'Gửi liên hệ thất bại')
+  }
+  return res.data.data
+}
+
 // --- POSTS --- //
 
 /**
@@ -301,7 +321,7 @@ export async function sendChatMessage(
 
 export async function editPost(id: string, formData: FormData): Promise<PostDTO> {
   const res = await api.put<Wrapped<PostDTO>>(
-    `api/posts/${id}`,
+    `/api/posts/${id}`,
     formData,
     { headers: { 'Content-Type': 'multipart/form-data' } }
   )

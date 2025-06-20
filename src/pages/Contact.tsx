@@ -1,7 +1,28 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
-import React from 'react';
-
+import React, { useState } from 'react';
+import {sendMessage} from '../API/api';
 const Contact: React.FC = () => {
+   const [name, setName] = useState('');
+   const [email, setEmail] = useState('');
+   const [phone, setPhone] = useState('');
+   const [message, setMessage] = useState('');
+   const handlerSend = async () => {
+      if (!name || !email || !phone || !message) {
+         alert('Vui lòng nhập đầy đủ thông tin');
+         return;
+      }
+      try {
+         await sendMessage(name, email, phone, message);
+         alert('Gửi liên hệ thành công');
+         setName('');
+         setEmail('');
+         setPhone('');
+         setMessage('');
+      } catch (err: any) {
+        alert(err.message || 'Gửi liên hệ thất bại');
+      }
+   }
   return (
    <section className='flex flex-col justify-between gap-[50px] w-[100%]' style={{ marginTop: '50px', marginBottom: '50px' }}>
             <div className="pt-[100px] mb-5">
@@ -39,12 +60,17 @@ const Contact: React.FC = () => {
                      {/* Cột form liên hệ */}
                      
                         <div className="w-full sm:w-full md:w-1/2 lg:w-1/2 px-4 mb-6">
-                           <form className="flex flex-col gap-2 w-[480px]">
+                           <form className="flex flex-col gap-2 w-[480px]" onSubmit={(e) => {
+                                 e.preventDefault();
+                                 handlerSend();
+                              }}>
                               {/* Họ tên của bạn */}
                               <div>
                                  <input
                                  type="text"
                                  name="your-name"
+                                 value={name}
+                                 onChange={(e) => setName(e.target.value)}
                                  placeholder="Họ tên của bạn"
                                  className="w-full border border-gray-300  placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                  required
@@ -57,6 +83,8 @@ const Contact: React.FC = () => {
                                  <input
                                  type="email"
                                  name="your-email"
+                                 value={email}
+                                 onChange={(e) => setEmail(e.target.value)}
                                  placeholder="Địa chỉ email của bạn"
                                  className="w-full border border-gray-300  placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                  required
@@ -69,6 +97,8 @@ const Contact: React.FC = () => {
                                  <input
                                  type="tel"
                                  name="your-phone"
+                                 value={phone}
+                                 onChange={(e) => setPhone(e.target.value)}
                                  placeholder="Số điện thoại của bạn"
                                  className="w-full border border-gray-300  placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                  required
@@ -80,6 +110,8 @@ const Contact: React.FC = () => {
                               <div>
                                  <textarea
                                  name="your-message"
+                                 value={message}
+                                 onChange={(e) => setMessage(e.target.value)}
                                  rows={6}
                                  placeholder="Vui lòng nhập nội dung"
                                  className="w-full border border-gray-300  placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"

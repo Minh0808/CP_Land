@@ -9,7 +9,7 @@
     "build:client": "vite build",
     "build:server": "tsc --project tsconfig.json",
     "build": "npm run build:client && npm run build:server",
-    "start": "node dist/index.js"
+    "start": "serve -s dist"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.8",
