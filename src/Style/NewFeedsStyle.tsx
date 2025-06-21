@@ -10,6 +10,10 @@ export const Wrapper = styled.div`
   gap: 30px;
   max-width: 1014px;
   margin: 0 auto;
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;    /* chỉ 1 cột */
+    padding: 0 16px;               /* đệm 2 bên */
+  }
 `
 
 // cột tin lớn
@@ -18,6 +22,9 @@ export const MainColumn = styled.div`
   flex-direction: column;
   gap: 20px;
   align-items: center;
+  @media (max-width: 768px) {
+    align-items: stretch;         /* card full width */
+  }
 `
 
 // mỗi card tin lớn nằm ngang
@@ -68,6 +75,12 @@ export const MainCard = styled.a`
    &:hover {
       border-bottom: 2px solid #007acc;
    }
+
+   @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: stretch;
+      width: 100%;
+   }
 `
 
 // cột sidebar
@@ -80,6 +93,11 @@ export const Sidebar = styled.aside`
    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
    border-radius: 4px;
    overflow: hidden;
+   @media (max-width: 768px) {
+      width: 100%;
+      height: auto;
+      margin-bottom: 20px;
+   }
 `
 
 export const SidebarHeader = styled.div`

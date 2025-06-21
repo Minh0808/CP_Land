@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // src/components/Searchbar/index.tsx
 
 import React, { useState, FormEvent, useEffect } from "react";

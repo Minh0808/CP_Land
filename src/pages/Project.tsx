@@ -1,14 +1,27 @@
 
-import React from "react"
+import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import Searchbar from "../Component/SearchBar"
 import PostList from "../Component/PostNew"
 
-const Project: React.FC = () => {
+function useWindowSize() {
+  const [width, setWidth] = useState(window.innerWidth);
 
+  useEffect(() => {
+    const onResize = () => setWidth(window.innerWidth);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  return width;
+}
+
+const Project: React.FC = () => {
+   const width = useWindowSize();
+  const isMobile = width < 768;
    return(
       <Wraper>
-         <Searchbar/>
+         {!isMobile && <Searchbar />}
          <PostList/>
       </Wraper>
    )

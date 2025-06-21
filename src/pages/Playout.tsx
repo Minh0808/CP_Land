@@ -21,15 +21,18 @@ import { AiOutlineGlobal, AiOutlineMail } from "react-icons/ai"
 import { PiVibrateLight } from "react-icons/pi"
 import { MdDocumentScanner, MdMapsHomeWork, MdOutlineFax } from "react-icons/md"
 import { LiaMapMarkedAltSolid } from "react-icons/lia"
+// import NavigationMobile from "../Component/navigationMobile"
+
 
 
 const Playout: React.FC = () => {
    const [open, setOpen] = useState(false)
    const [chatOpen, setChatOpen] = useState(false)
-
+   
+   
   return (
     <Background>
-      <Navigation/>
+      <Navigation />
 
       <Main>
         <Outlet />
@@ -39,7 +42,7 @@ const Playout: React.FC = () => {
         <LogoFooter src={Logo} alt="Logo CP Land Footer" />
         <InforFooter>
           <InforItem>
-            <MdMapsHomeWork color="white" size={25}/>Công ty cổ phần CP-Land
+            <MdMapsHomeWork color="white" size={25}/><p>Công ty cổ phần CP-Land</p>
          </InforItem>
           <InforItem>
             <LiaMapMarkedAltSolid color="white" size={25}/>Địa chỉ: Thôn Đống Vừng, Yên Sơn, Lục Nam, Bắc Giang

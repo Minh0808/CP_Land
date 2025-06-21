@@ -1,139 +1,112 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 import React, { useState } from 'react';
-import {sendMessage} from '../API/api';
+import { sendMessage } from '../API/api';
+
 const Contact: React.FC = () => {
-   const [name, setName] = useState('');
-   const [email, setEmail] = useState('');
-   const [phone, setPhone] = useState('');
-   const [message, setMessage] = useState('');
-   const handlerSend = async () => {
-      if (!name || !email || !phone || !message) {
-         alert('Vui lòng nhập đầy đủ thông tin');
-         return;
-      }
-      try {
-         await sendMessage(name, email, phone, message);
-         alert('Gửi liên hệ thành công');
-         setName('');
-         setEmail('');
-         setPhone('');
-         setMessage('');
-      } catch (err: any) {
-        alert(err.message || 'Gửi liên hệ thất bại');
-      }
-   }
+  const [name, setName]       = useState('');
+  const [email, setEmail]     = useState('');
+  const [phone, setPhone]     = useState('');
+  const [message, setMessage] = useState('');
+
+  const handlerSend = async () => {
+    if (!name || !email || !phone || !message) {
+      alert('Vui lòng nhập đầy đủ thông tin');
+      return;
+    }
+    try {
+      await sendMessage(name, email, phone, message);
+      alert('Gửi liên hệ thành công');
+      setName(''); setEmail(''); setPhone(''); setMessage('');
+    } catch (err: any) {
+      alert(err.message || 'Gửi liên hệ thất bại');
+    }
+  };
+
   return (
-   <section className='flex flex-col justify-between gap-[50px] w-[100%]' style={{ marginTop: '50px', marginBottom: '50px' }}>
-            <div className="pt-[100px] mb-5">
-                     <h3 className='text-center text-[#015ea7] font-bold text-3xl'>THÔNG TIN LIÊN HỆ</h3>
-                  </div>
-                  <div className='flex justify-center'>
-                     <p>
-                           <iframe
-                              src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d7449.622346658035!2d105.8069!3d21.000205!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x14e5c3fdbe0c0ce7!2zQ8O0bmcgVHkgQ1BEViAmIMSQ4buLYSDhu5BjIMSQ4bqldCBYYW5oIE1p4buBbiBC4bqvYw!5e0!3m2!1svi!2sus!4v1552734639196"
-                              width="1300px"
-                              height={600}
-                              
-                              style={{ border: 0, display: 'flex', justifyContent: 'center' }}
-                              allowFullScreen
-                           />
-                        </p>
-                  </div>
-            <div className='flex flex-row justify-center gap-[10px] leading-loose' style={{ maxWidth: '80%', margin: 'auto' }}>
-                     {/* Cột thông tin công ty */}
-                     <div>
-                        <div style={{ fontSize: '18px' }}>
-                        <p>Công ty cổ phần dịch vụ và địa ốc Đất Xanh Miền Bắc</p>
-                        <p>
-                           Địa chỉ: Tầng 18, Toà nhà Center Building, Số 1 Nguyễn Huy
-                           Tưởng,
-                           <br />
-                           Quận Thanh Xuân, Hà Nội
-                        </p>
-                        <p>MST: 0104794967 – Ngày cấp: 7/7/2010</p>
-                        <p>Nơi cấp: Sở Kế hoạch và Đầu tư Thành phố Hà Nội</p>
-                        <p>&nbsp;</p>
-                        </div>
-                     </div>
+    <div className="flex flex-col items-center mx-auto">
+      <section className="w-full flex flex-col items-center gap-6">
+        {/* Tiêu đề */}
+        <h3 className="text-3xl text-center text-[#015ea7] font-bold mb-10">
+          THÔNG TIN LIÊN HỆ
+        </h3>
 
-                     {/* Cột form liên hệ */}
-                     
-                        <div className="w-full sm:w-full md:w-1/2 lg:w-1/2 px-4 mb-6">
-                           <form className="flex flex-col gap-2 w-[480px]" onSubmit={(e) => {
-                                 e.preventDefault();
-                                 handlerSend();
-                              }}>
-                              {/* Họ tên của bạn */}
-                              <div>
-                                 <input
-                                 type="text"
-                                 name="your-name"
-                                 value={name}
-                                 onChange={(e) => setName(e.target.value)}
-                                 placeholder="Họ tên của bạn"
-                                 className="w-full border border-gray-300  placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                 required
-                                 style={{padding: '2px 10px'}}
-                                 />
-                              </div>
+        {/* Container chính */}
+        <div className="flex flex-col items-center w-full lg:flex-row lg:justify-between lg:items-start lg:space-x-8 gap-6">
 
-                              {/* Địa chỉ email của bạn */}
-                              <div>
-                                 <input
-                                 type="email"
-                                 name="your-email"
-                                 value={email}
-                                 onChange={(e) => setEmail(e.target.value)}
-                                 placeholder="Địa chỉ email của bạn"
-                                 className="w-full border border-gray-300  placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                 required
-                                 style={{padding: '2px 10px'}}
-                                 />
-                              </div>
+          {/* Bên trái: bản đồ + info */}
+          <div className="w-full lg:w-1/2 flex flex-col items-center space-y-6 gap-6">
+            {/* Wrapper map: width ~91%, mx-auto sẽ căn giữa */}
+            <div className="w-[90%] h-[500px] mx-auto px-2">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d7449.622346658035!2d105.8069!3d21.000205!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x14e5c3fdbe0c0ce7!2zQ8O0bmcgVHkgQ1BEViAmIMSQ4buLYSDhu5BjIMSQ4bqldCBYYW5oIE1p4buBbiBC4bqvYw!5e0!3m2!1svi!2sus!4v1552734639196"
+                className="w-full h-full border-0 rounded-lg"
+                allowFullScreen
+                loading="lazy"
+              />
+            </div>
+            {/* Info công ty */}
+            <div className="space-y-2 text-gray-700 text-[18px] text-center lg:text-left w-[90%]">
+              <p className="font-medium">
+                Công ty cổ phần dịch vụ và địa ốc Đất Xanh Miền Bắc
+              </p>
+              <p>
+                Địa chỉ: Tầng 18, Tòa nhà Center Building, Số 1 Nguyễn Huy Tưởng,<br/>
+                Quận Thanh Xuân, Hà Nội
+              </p>
+              <p>MST: 0104794967 – Ngày cấp: 7/7/2010</p>
+              <p>Nơi cấp: Sở Kế hoạch và Đầu tư Thành phố Hà Nội</p>
+            </div>
+          </div>
 
-                              {/* Số điện thoại của bạn */}
-                              <div>
-                                 <input
-                                 type="tel"
-                                 name="your-phone"
-                                 value={phone}
-                                 onChange={(e) => setPhone(e.target.value)}
-                                 placeholder="Số điện thoại của bạn"
-                                 className="w-full border border-gray-300  placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                 required
-                                 style={{padding: '2px 10px'}}
-                                 />
-                              </div>
-
-                              {/* Nội dung */}
-                              <div>
-                                 <textarea
-                                 name="your-message"
-                                 value={message}
-                                 onChange={(e) => setMessage(e.target.value)}
-                                 rows={6}
-                                 placeholder="Vui lòng nhập nội dung"
-                                 className="w-full border border-gray-300  placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                 required
-                                 style={{padding: '2px 10px'}}
-                                 />
-                              </div>
-
-                              {/* Nút Gửi đi */}
-                              <div>
-                                 <button
-                                 type="submit"
-                                 className="inline-block bg-blue-800 text-white font-semibold px-6 py-3 rounded-md hover:bg-blue-700 transition"
-                                 style={{padding: '4px 14px'}}
-                                 >
-                                 GỬI ĐI
-                                 </button>
-                              </div>
-                           </form>
-                           </div>
-                  </div>
-      </section>     
+          {/* Bên phải: form */}
+          <div className="w-[90%] lg:w-1/2 mt-8 lg:mt-0 flex justify-center">
+            <form
+              onSubmit={e => { e.preventDefault(); handlerSend(); }}
+              className="space-y-4 max-w-md w-full flex flex-col gap-2.5  mb-100px"
+            >
+              <input
+                type="text"
+                placeholder="Họ tên của bạn"
+                value={name}
+                onChange={e => setName(e.target.value)}
+                className="w-full border border-gray-300 p-2.5 lg:px-3 lg:py-2 lg:rounded focus:ring-2 focus:ring-blue-500"
+                required
+              />
+              <input
+                type="email"
+                placeholder="Địa chỉ email của bạn"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                className="w-full border border-gray-300 lg:rounded lg:px-3 lg:py-2 focus:ring-2 focus:ring-blue-500"
+                required
+              />
+              <input
+                type="tel"
+                placeholder="Số điện thoại của bạn"
+                value={phone}
+                onChange={e => setPhone(e.target.value)}
+                className="w-full border border-gray-300 lg:rounded lg:px-3 lg:py-2 focus:ring-2 focus:ring-blue-500"
+                required
+              />
+              <textarea
+                placeholder="Vui lòng nhập nội dung"
+                rows={5}
+                value={message}
+                onChange={e => setMessage(e.target.value)}
+                className="w-full border border-gray-300 lg:rounded lg:px-3 lg:py-2 focus:ring-2 focus:ring-blue-500"
+                required
+              />
+              <button
+                type="submit"
+                className="w-[100px] h-[35px] bg-blue-800 text-white font-semibold lg:rounded py-2 hover:bg-blue-700 transition"
+              >
+                GỬI ĐI
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 };
 

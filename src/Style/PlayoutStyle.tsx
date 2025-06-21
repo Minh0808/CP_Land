@@ -84,12 +84,24 @@ export const Footer = styled.div`
    justify-content: center;
    padding-bottom: 50px;
    align-items: center;
-   gap: 100px;   
+   gap: 100px;
+   
+   @media (max-width: 768px) {
+      height: 600px;
+      flex-direction: column;
+      gap: 20px;
+      margin-bottom: 30px;
+      align-items: center;
+   }
 `
 export const InforFooter = styled.div`
    display: flex;
    flex-direction: column;
    justify-content: center;
+
+   @media (max-width: 768px) {
+      max-width: 90%;
+   }
 `
 export const InforItem = styled.p`
    padding-top: 20px;
@@ -98,6 +110,10 @@ export const InforItem = styled.p`
    display: flex;
    align-items: center;
    gap: 5px;
+
+   @media (max-width: 768px) {
+      font-size: 16px;
+   }
 `
 
 export const ModalGroup = styled.div`

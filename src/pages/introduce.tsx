@@ -63,10 +63,20 @@ const Title = styled.h1`
    text-align: center;
    font-size: 30px;
    font-weight: bold;
+
+   @media (max-width: 768px) {
+      font-size: 25px;
+   }
 `
 const Text = styled.p`
    padding-top: 15px;
    font-size: 18px;
+
+   @media (max-width: 768px) {
+      font-size: 16px;
+      max-width: 92%;
+      margin: 0 auto;
+   }
 `
 const LogoInfor = styled.div`
    background: url(${LogoInforGT});
@@ -77,6 +87,11 @@ const LogoInfor = styled.div`
    max-width: 686px;
    height: 616px;
    margin: 0 auto;
+
+   @media (max-width: 768px) {
+      max-width: 360px;
+      height: 350px;
+   }
 `
 const Infor = styled.div`
    max-width: 1140px;

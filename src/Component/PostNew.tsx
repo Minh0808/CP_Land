@@ -71,8 +71,8 @@ const PostList = forwardRef<HTMLDivElement, PostListProps>(({ horizontal }, ref)
               <CardBody>
                 <Title>{post.title}</Title>
                 <Meta>
-                  <span>Giá: {post.price.toLocaleString()} ₫</span>
-                  <span>Diện tích: {post.area} m²</span>
+                  <span>Giá từ: <PriceValue>{post.price.toLocaleString()}</PriceValue> ₫</span>
+                  <span id="area">Diện tích: {post.area} m²</span>
                 </Meta>
                 <Address>
                   {post.address.street && `${post.address.street}, `}
@@ -107,6 +107,11 @@ export const Container = styled.div<{ horizontal?: boolean }>`
   display: ${({ horizontal }) => (horizontal ? "flex" : "grid")};
   gap: 24px;
 
+  @media (max-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+      justify-content: center;
+      justify-items: center;
+    }
   /* hidden native scrollbar */
   ${({ horizontal }) =>
     horizontal
@@ -154,6 +159,11 @@ const Card = styled.div`
   &:hover {
     border-bottom: 2px solid #ff6600;
   }
+
+  @media (max-width: 768px) {
+    width: 170px;
+    height: 275px;
+  }
 `;
 
 const Image = styled.img`
@@ -161,6 +171,11 @@ const Image = styled.img`
   height: 180px;
   object-fit: cover;
   background-color: #f2f2f2;
+
+  @media (max-width: 768px) {
+    height: 120px;
+    padding: 5px;
+  }
 `;
 
 const Placeholder = styled.div`
@@ -172,6 +187,11 @@ const Placeholder = styled.div`
   background-color: #e0e0e0;
   color: #888;
   font-size: 14px;
+  
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const CardBody = styled.div`
@@ -184,7 +204,13 @@ const CardBody = styled.div`
 const Title = styled.h3`
   font-size: 18px;
   margin: 0 0 8px;
-  color: #333;
+  color: #23527c;
+  text-align: center;
+
+  @media (max-width: 768px) {
+    font-weight: bold;
+    
+  }
 `;
 
 const Meta = styled.div`
@@ -193,12 +219,22 @@ const Meta = styled.div`
   display: flex;
   justify-content: space-between;
   margin-bottom: 8px;
+
+  @media (max-width: 768px) {
+    span#area {
+    display: none;
+  }
+  }
 `;
 
 const Address = styled.p`
   font-size: 14px;
   color: #555;
   margin: 4px 0;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const DateStr = styled.p`
@@ -206,4 +242,13 @@ const DateStr = styled.p`
   color: #888;
   margin-top: auto;
   text-align: right;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+const PriceValue = styled.span`
+  color: #ff6600;
+  font-weight: bold;
+  font-size: 20px;
 `;
