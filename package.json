@@ -9,10 +9,12 @@
     "build:client": "vite build",
     "build:server": "tsc --project tsconfig.json",
     "build": "npm run build:client && npm run build:server",
-    "start": "serve -s dist"
+    "start": "serve -s dist",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.8",
+    "@uploadthing/react": "^7.3.2",
     "@vercel/node": "^5.1.15",
     "axios": "^1.9.0",
     "cheerio": "^1.0.0",
@@ -23,13 +25,16 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
+    "react-number-format": "^5.4.4",
     "react-router-dom": "^7.5.2",
     "styled-components": "^6.1.18",
-    "tailwindcss": "^4.1.8",
+    "tailwindcss": "^4.1.10",
+    "uploadthing": "^7.7.3",
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
+    "@tailwindcss/postcss": "^4.1.10",
     "@types/cors": "^2.8.17",
     "@types/dotenv": "^8.2.3",
     "@types/express": "^5.0.1",
@@ -53,6 +58,7 @@
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^16.0.0",
     "jsdom": "^26.1.0",
+    "postcss": "^8.5.6",
     "prettier": "^3.5.3",
     "ts-node-dev": "^2.0.0",
     "typescript": "~5.7.2",

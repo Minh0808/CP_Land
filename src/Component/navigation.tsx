@@ -4,7 +4,6 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import IconLogo from '../assets/Logo.png';
 import styled from 'styled-components';
 import { AuthContext } from '../Contexts/AuthContext';
-import { FaEnvelope, FaFacebookF, FaInstagram, FaTwitter } from 'react-icons/fa';
 import { IoMenu, IoSearchOutline } from 'react-icons/io5';
 
 function useWindowSize() {
@@ -116,18 +115,6 @@ const Navigation: React.FC = () => {
               ) : (
                 <NavLink to="/login">ĐĂNG NHẬP</NavLink>
               ))}
-            <Link to="/">
-              <FaFacebookF size={20} />
-            </Link>
-            <Link to="/">
-              <FaInstagram size={20} />
-            </Link>
-            <Link to="/">
-              <FaTwitter size={20} />
-            </Link>
-            <Link to="/">
-              <FaEnvelope size={20} />
-            </Link>
           </Social>
         </>
       ) : (
@@ -190,7 +177,7 @@ const Background = styled.div`
   position: fixed;
   top: 0;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   padding: 0 20px;
   background-color: #005a97;

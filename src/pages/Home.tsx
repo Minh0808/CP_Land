@@ -35,20 +35,21 @@ import {
   TitleInfor,
   TextInfo
 } from '../Style/HomeStyle';
-import { NewsItem, PanelData } from '../types/interface';
+import { NewsItem } from '../types/interface';
 import { fetchHotReal, fetchPanels } from '../API/api';
 import PostList from '../Component/PostNew';
+import type { Panel } from '../API/api';
 
 const Home: React.FC = () => {
   // — Panels carousel (unchanged) —
-  const [panels, setPanels] = useState<PanelData[]>([]);
+  const [panels, setPanels] = useState<Panel[]>([]);
   const [panelIndex, setPanelIndex] = useState(0);
 
   useEffect(() => {
     (async () => {
       try {
         const data = await fetchPanels();
-        setPanels(data.sort((a, b) => a.sort_order - b.sort_order));
+        setPanels(data);
       } catch (err) {
         console.error('Lỗi fetch panels:', err);
       }
@@ -121,7 +122,7 @@ const Home: React.FC = () => {
       <SliderWrapper ref={panelRef}>
         <Slides $index={panelIndex}>
           {panels.map(p => (
-            <Slide key={p.id} $url={p.image_url} />
+            <Slide key={p.id} $url={p.images[0].url} />
           ))}
         </Slides>
         <PrevButton onClick={prevPanel}>

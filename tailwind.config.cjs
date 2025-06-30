@@ -5,11 +5,13 @@ module.exports = {
     './src/**/*.{js,jsx,ts,tsx,html}',
   ],
   theme: {
-    extend: {
-      // Nếu bạn muốn dùng spacing custom 100px
-      spacing: {
-        '100px': '100px',
-      }
+    screens: {
+      xs: {max: '390px'},
+      sm: '640px',  
+      md: '768px',  
+      lg: '1024px',  
+      xl: '1280px',  
+      '2xl': '1536px',
     },
   },
   plugins: [],

@@ -1,35 +1,37 @@
-
-import React, { useEffect, useState } from "react"
-import styled from "styled-components"
-import Searchbar from "../Component/SearchBar"
-import PostList from "../Component/PostNew"
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import Searchbar from '../Component/SearchBar';
+import PostList from '../Component/PostNew';
+import { Link } from 'react-router-dom';
 
 function useWindowSize() {
-  const [width, setWidth] = useState(window.innerWidth);
+   const [width, setWidth] = useState(window.innerWidth);
 
-  useEffect(() => {
-    const onResize = () => setWidth(window.innerWidth);
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
-  }, []);
+   useEffect(() => {
+      const onResize = () => setWidth(window.innerWidth);
+      window.addEventListener('resize', onResize);
+      return () => window.removeEventListener('resize', onResize);
+   }, []);
 
-  return width;
+   return width;
 }
 
 const Project: React.FC = () => {
    const width = useWindowSize();
-  const isMobile = width < 768;
-   return(
+   const isMobile = width < 768;
+   return (
       <Wraper>
          {!isMobile && <Searchbar />}
-         <PostList/>
+         <Link to={'/du-an/:id'}>
+            <PostList />
+         </Link>
       </Wraper>
-   )
-}
-export default Project
+   );
+};
+export default Project;
 
 const Wraper = styled.div`
    margin-top: 100px;
    width: 100%;
    height: 100%;
-`
+`;

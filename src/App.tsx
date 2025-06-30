@@ -25,7 +25,7 @@ const App: React.FC = () => {
                <Route path="du-an" element={<Project />}/>
                <Route path="lien-he" element={<Contact />}/>
                <Route path="dang-bai" element={<PostCreate />}/>
-               <Route path="/post/:id" element={<PostDetail />} />
+               <Route path="post/:id" element={<PostDetail />} />
                <Route path="panels"     element={<AdminPanel />} />
                <Route path="news-feeds" element={<NewFeeds />} />
             </Route>

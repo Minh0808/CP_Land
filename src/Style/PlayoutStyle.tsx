@@ -33,8 +33,8 @@ export const Main = styled.main`
 export const Modal = styled.div`
    position: fixed;
    bottom: 0px;
-   left: auto;
-   right: 50px;
+   left: 0;
+   right: auto;
    flex-shrink: 0;
    width: 300px;
    height: 50px;
@@ -84,7 +84,7 @@ export const Footer = styled.div`
    justify-content: center;
    padding-bottom: 50px;
    align-items: center;
-   gap: 100px;
+   gap: 30px;
    
    @media (max-width: 768px) {
       height: 600px;
