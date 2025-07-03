@@ -1,0 +1,118 @@
+/* quill-custom.css */
+.ql-snow .ql-picker.ql-size .ql-picker-item::before {
+  content: attr(data-value) !important;
+}
+.ql-snow .ql-picker.ql-size .ql-picker-label::before {
+  content: attr(data-value) !important;
+}
+/* quill-custom.css */
+
+/* Cho dropdown của size cuộn được */
+.ql-snow .ql-picker.ql-size .ql-picker-options {
+  max-height: 200px;    /* cao tối đa, bạn chỉnh tuỳ ý */
+  overflow-y: auto;     /* bật thanh cuộn dọc */
+}
+
+/* Nếu bạn muốn dropdown font cũng cuộn: */
+.ql-snow .ql-picker.ql-font .ql-picker-options {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+/* Đảm bảo style scrollbar (tuỳ chỉnh nếu muốn) */
+.ql-snow .ql-picker .ql-picker-options::-webkit-scrollbar {
+  width: 8px;
+}
+.ql-snow .ql-picker .ql-picker-options::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.2);
+  border-radius: 4px;
+}
+
+.ql-snow .ql-editor .ql-size-12px { font-size: 12px; }
+.ql-snow .ql-editor .ql-size-14px { font-size: 14px; }
+.ql-snow .ql-editor .ql-size-16px { font-size: 16px; }
+.ql-snow .ql-editor .ql-size-18px { font-size: 18px; }
+.ql-snow .ql-editor .ql-size-20px { font-size: 20px; }
+.ql-snow .ql-editor .ql-size-22px { font-size: 22px; }
+.ql-snow .ql-editor .ql-size-24px { font-size: 24px; }
+.ql-snow .ql-editor .ql-size-26px { font-size: 26px; }
+.ql-snow .ql-editor .ql-size-28px { font-size: 28px; }
+.ql-snow .ql-editor .ql-size-30px { font-size: 30px; }
+.ql-snow .ql-editor .ql-size-32px { font-size: 32px; }
+.ql-snow .ql-editor .ql-size-34px { font-size: 34px; }
+.ql-snow .ql-editor .ql-size-36px { font-size: 36px; }
+.ql-snow .ql-editor .ql-size-38px { font-size: 38px; }
+.ql-snow .ql-editor .ql-size-40px { font-size: 40px; }
+.ql-snow .ql-editor .ql-size-42px { font-size: 42px; }
+.ql-snow .ql-editor .ql-size-44px { font-size: 44px; }
+.ql-snow .ql-editor .ql-size-46px { font-size: 46px; }
+.ql-snow .ql-editor .ql-size-48px { font-size: 48px; }
+.ql-snow .ql-editor .ql-size-50px { font-size: 50px; }
+.ql-snow .ql-editor .ql-size-52px { font-size: 52px; }
+.ql-snow .ql-editor .ql-size-54px { font-size: 54px; }
+.ql-snow .ql-editor .ql-size-56px { font-size: 56px; }
+.ql-snow .ql-editor .ql-size-58px { font-size: 58px; }
+.ql-snow .ql-editor .ql-size-60px { font-size: 60px; }
+.ql-snow .ql-editor .ql-size-62px { font-size: 62px; }
+.ql-snow .ql-editor .ql-size-64px { font-size: 64px; }
+.ql-snow .ql-editor .ql-size-66px { font-size: 66px; }
+.ql-snow .ql-editor .ql-size-68px { font-size: 68px; }
+.ql-snow .ql-editor .ql-size-70px { font-size: 70px; }
+
+/* 1) Container label cho Font-family */
+.ql-snow .ql-picker.ql-font .ql-picker-label {
+  position: relative;
+  overflow: visible !important;
+  padding-right: 1.5em;   /* chừa chỗ cho mũi tên */
+}
+
+/* 2) Chỉ cắt phần text của Font-family */
+.ql-snow .ql-picker.ql-font .ql-picker-label::before {
+  content: attr(data-value) !important;
+  display: inline-block;
+  max-width: 120px;       /* vừa phải, adjust nếu cần */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+
+/* 3) Label cho Size */
+.ql-snow .ql-picker.ql-size .ql-picker-label {
+  position: relative;
+  overflow: visible !important;
+  padding-right: 1.5em;   /* chừa chỗ cho mũi tên */
+}
+
+/* 4) Chỉ cắt phần text của Size */
+.ql-snow .ql-picker.ql-size .ql-picker-label::before {
+  content: attr(data-value) !important;
+  display: inline-block;
+  max-width: 60px;        /* adjust vừa với “12px”, “100px”… */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+
+/* 5) Dropdown items: cũng ellipsis nếu quá dài */
+.ql-snow .ql-picker.ql-font .ql-picker-item::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item::before {
+  content: attr(data-value) !important;
+  display: inline-block;
+  max-width: 200px;       /* menu item đủ rộng */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* Áp font-family thực tế lên editor */
+.ql-snow .ql-editor .ql-font-sans-serif { font-family: sans-serif; }
+.ql-snow .ql-editor .ql-font-serif       { font-family: serif; }
+.ql-snow .ql-editor .ql-font-monospace   { font-family: monospace; }
+.ql-snow .ql-editor .ql-font-Arial       { font-family: Arial; }
+.ql-snow .ql-editor .ql-font-Courier\ New { font-family: "Courier New"; }
+/* Lưu ý escape dấu cách thành `\ ` */
+.ql-snow .ql-editor .ql-font-Times\ New\ Roman { font-family: "Times New Roman"; }
+.ql-snow .ql-editor .ql-font-Georgia      { font-family: Georgia; }
+.ql-snow .ql-editor .ql-font-Verdana      { font-family: Verdana; }
+

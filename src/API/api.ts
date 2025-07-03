@@ -19,10 +19,10 @@ export interface RssItem {
    summary: string;
 }
 
-export interface imagesUpload{
-   url: string
-   key: string
-   contentType: string
+export interface imagesUpload {
+   url: string;
+   key: string;
+   contentType: string;
 }
 export interface Panel {
    id: string;
@@ -152,8 +152,8 @@ export async function fetchHotReal(): Promise<RssItem[]> {
  */
 // API/api.ts
 export async function fetchPanels(): Promise<Panel[]> {
-  const res = await api.get<Panel[]>('/panels');
-  return res.data; 
+   const res = await api.get<Panel[]>('/panels');
+   return res.data;
 }
 
 export async function fetchPanelById(id: string): Promise<Panel> {
@@ -164,22 +164,20 @@ export async function fetchPanelById(id: string): Promise<Panel> {
    return res.data.data;
 }
 
-
 /**
  * Tạo panel mới
  */
 // client/api.ts
 export async function createPanel(payload: FormData): Promise<Panel> {
-  // trước:
-  // const res = await api.post<Wrapped<Panel>>('/panels', payload);
+   // trước:
+   // const res = await api.post<Wrapped<Panel>>('/panels', payload);
 
-  // sửa thành:
-  const res = await api.post<Panel>('/panels', payload);
+   // sửa thành:
+   const res = await api.post<Panel>('/panels', payload);
 
-  // server trả thẳng Panel (newPanelDTO) nên:
-  return res.data;
+   // server trả thẳng Panel (newPanelDTO) nên:
+   return res.data;
 }
-
 
 /**
  * Cập nhật panel
@@ -196,12 +194,11 @@ export async function updatePanel(id: string, payload: FormData): Promise<Panel>
  * Xóa panel
  */
 export async function deletePanel(id: string): Promise<void> {
-  const res = await api.delete<{ id: string }>(`/panels/${id}`);
-  if (!res.data.id) {
-    throw new Error('Xóa panel thất bại');
-  }
+   const res = await api.delete<{ id: string }>(`/panels/${id}`);
+   if (!res.data.id) {
+      throw new Error('Xóa panel thất bại');
+   }
 }
-
 
 // --- SIGNUP --- //
 
@@ -322,12 +319,131 @@ export async function uploadImage(file: File): Promise<UploadResult> {
 }
 
 // Gửi DELETE có body payload với axios:
+// export const deleteImage = async (keys: string[]): Promise<void> => {
+//    const res = await api.delete<Wrapped<null>>(`/api/upload`, {
+//       data: { fileKeys: keys },
+//    });
+
+//    if (!res.data.status) {
+//       throw new Error(res.data.message || 'Xóa file thất bại');
+//    }
+// };
 export const deleteImage = async (keys: string[]): Promise<void> => {
-   const res = await api.delete<Wrapped<null>>(`/api/upload`, {
-      data: { fileKeys: keys },
+  const res = await api.delete(`/api/upload`, {
+    data: { fileKeys: keys },
+  });
+  // nếu HTTP status không thuộc 2xx thì coi như lỗi
+  if (res.status < 200 || res.status >= 300) {
+    throw new Error(`Xóa file thất bại (HTTP ${res.status})`);
+  }
+}
+
+/**
+ * Gọi hàm này khi bạn đã có sẵn
+ *   - content: string (HTML đã replace URL)
+ *   - media: MediaItem[] (mảng metadata)
+ */
+export interface MediaItem {
+   key: string;
+   url: string;
+   type: 'image' | 'video';
+}
+
+export interface NewfeedsAD {
+   id: string;
+   content: string;
+   media: MediaItem[];
+   title: string;
+   excerpt: string;
+   publishedAt?: string;
+   category?: string;
+}
+
+export async function createNewfeedsAD(
+   content: string,
+   media: MediaItem[],
+   title?: string,
+   excerpt?: string,
+   publishedAt?: string,
+   category?: string
+): Promise<NewfeedsAD> {
+   const form = new FormData();
+   form.append('content', content);
+   form.append('media', JSON.stringify(media));
+   if (title) form.append('title', title);
+   if (excerpt) form.append('excerpt', excerpt);
+   if (publishedAt) form.append('publishedAt', publishedAt);
+   if (category) form.append('category', category);
+
+   // 1) Gọi với generic Wrapped<NewfeedsAD>
+   const res = await api.post<NewfeedsAD>('/api/newFeeds-admin', form, {
+      headers: { 'Content-Type': 'multipart/form-data' },
    });
 
-   if (!res.data.status) {
-      throw new Error(res.data.message || 'Xóa file thất bại');
+   // 2) Nếu backend báo lỗi thì ném ra
+   if (!res.data || !res.data) {
+      throw new Error(res.data || 'Create NewFeed thất bại');
    }
-};
+
+   // 3) Trả về phần data
+   return res.data;
+}
+
+// Lấy tất cả
+export async function fetchNewFeeds(): Promise<NewfeedsAD[]> {
+  const res = await api.get<NewfeedsAD[]>('/api/rss-news');
+  if (!res.data || !res.data) {
+    throw new Error(res.data || 'Không tải được danh sách NewFeeds');
+  }
+  return res.data;
+}
+
+// Lấy chi tiết theo ID
+export async function fetchNewFeedById(id: string): Promise<NewfeedsAD> {
+  const res = await api.get<NewfeedsAD>(`/api/rss-news/${id}`);
+  if (!res.data || !res.data) {
+    throw new Error(res.data || 'Không tìm thấy bài viết');
+  }
+  return res.data;
+}
+
+export async function updateNewFeedAD(
+  id: string,
+  payload: Partial<{
+    content: string;
+    media: MediaItem[];
+    title?: string;
+    excerpt?: string;
+    publishedAt?: string;
+    category?: string;
+  }>
+): Promise<NewfeedsAD> {
+  // nếu dùng FormData (multipart)
+  const form = new FormData();
+  if (payload.content)     form.append('content', payload.content);
+  if (payload.media)       form.append('media', JSON.stringify(payload.media));
+  if (payload.title)       form.append('title', payload.title);
+  if (payload.excerpt)     form.append('excerpt', payload.excerpt);
+  if (payload.publishedAt) form.append('publishedAt', payload.publishedAt);
+  if (payload.category)    form.append('category', payload.category);
+
+  const res = await api.put<NewfeedsAD>(
+    `/api/newFeeds-admin/${id}`,
+    form,
+    { headers: { 'Content-Type': 'multipart/form-data' } }
+  );
+  if (!res.data || !res.data) {
+    throw new Error(res.data || 'Cập nhật NewFeed thất bại');
+  }
+  return res.data;
+}
+
+/**
+ * Xóa một NewFeed
+ */
+export async function deleteNewFeedAD(id: string): Promise<void> {
+  const res = await api.delete<null>(`/api/newFeeds-admin/${id}`);
+  if (res.status < 200 || res.status >= 300) {
+    throw new Error(`Xóa thất bại (HTTP ${res.status})`);
+  }
+}

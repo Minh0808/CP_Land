@@ -12,6 +12,9 @@ import Project from './pages/Project';
 import PostCreate from './pages/PostCreate';
 import PostDetail from './Component/PostDetail';
 import Contact from './pages/Contact';
+import CreateNewFeeds from './pages/createNewFeeds';
+import NewFeedsList from './Component/NewFeedsList';
+import NewFeedsDetail from './pages/NewFeedsDetail';
 const App: React.FC = () => {
    return (
       <BrowserRouter>
@@ -28,6 +31,9 @@ const App: React.FC = () => {
                <Route path="post/:id" element={<PostDetail />} />
                <Route path="panels"     element={<AdminPanel />} />
                <Route path="news-feeds" element={<NewFeeds />} />
+               <Route path="dang-tin-tuc" element={<CreateNewFeeds />} />
+               <Route path="tin-tuc" element={<NewFeedsList />} />
+               <Route path="tin-tuc/:id" element={<NewFeedsDetail />} />
             </Route>
          </Routes>
       </BrowserRouter>

@@ -72,7 +72,7 @@ const Navigation: React.FC = () => {
             <NavLink to="/home">TRANG CHỦ</NavLink>
             <NavLink to="/introduce">GIỚI THIỆU</NavLink>
             <NavLink to="/du-an">DỰ ÁN</NavLink>
-            <NavLink to="/news-feeds">TIN TỨC</NavLink>
+            <NavLink to="/tin-tuc">TIN TỨC</NavLink>
             <NavLink to="/lien-he">LIÊN HỆ</NavLink>
 
             {user?.role === 'admin' && (
@@ -87,6 +87,9 @@ const Navigation: React.FC = () => {
                     </NavLink>
                     <NavLink to="/dang-bai" onClick={() => setOpenAdminMenu(false)}>
                       Đăng Bài
+                    </NavLink>
+                    <NavLink to="/dang-tin-tuc" onClick={() => setOpenAdminMenu(false)}>
+                      Đăng tin tức
                     </NavLink>
                   </Submenu>
                 )}

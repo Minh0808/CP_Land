@@ -41,12 +41,12 @@ const Playout: React.FC = () => {
             <MdMapsHomeWork color="white" size={25}/><span>Công ty cổ phần CP-Land</span>
          </InforItem>
           <InforItem>
-            <LiaMapMarkedAltSolid color="white" size={25}/>Địa chỉ: Thôn Đống Vừng, Yên Sơn, Lục Nam, Bắc Giang
+            <LiaMapMarkedAltSolid color="white" size={25}/>Địa chỉ: Thôn: Đống Vừng, Xã: Bắc Lũng, Tỉnh: Bắc Ninh
          </InforItem>
         </InforFooter>
         <InforFooter>
           <InforItem>
-            <PiVibrateLight color="white" size={25}/>SĐT: 0987453131
+            <PiVibrateLight color="white" size={25}/>SĐT: 0339957868
          </InforItem>
           <InforItem>
             <AiOutlineGlobal color="white" size={25}/>Wedsite: cpland.net

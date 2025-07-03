@@ -41,10 +41,10 @@ const Contact: React.FC = () => {
             <div style={{fontWeight: 'bold'}} className="flex-1 flex flex-col gap-[10px] text-[18px]">
                <p className="font-medium">Công ty cổ phần CP-Land</p>
                <p>
-                  Địa chỉ: Thôn Đống Vừng, Yên Sơn, Lục Nam, Bắc Giang
+                  Địa chỉ: Thôn: Đống Vừng, Xã: Bắc Lũng, Tỉnh: Bắc Ninh
                </p>
                <Link to="https://cpland.net" className='text-[#015ea7]'>Wedsite: cpland.net</Link>
-               <p>SĐT: 0987453131</p>
+               <p>SĐT: 0339957868</p>
                <p>Email: cpland.thongtin@gmail.com</p>
             </div>
 
