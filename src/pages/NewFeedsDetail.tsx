@@ -1,6 +1,6 @@
 // src/pages/NewFeedsDetail.tsx
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { fetchNewFeedById, NewfeedsAD, MediaItem } from '../API/api';
 import styled from 'styled-components';
 
@@ -71,7 +71,7 @@ const NewFeedsDetail: React.FC = () => {
   if (!feed)   return <Container>Bài viết không tồn tại.</Container>;
 
   // Lọc riêng media để show grid
-  const extraMedia: MediaItem[] = feed.media.filter(m => {
+  const extraMedia: MediaItem[] = feed.media.filter(() => {
     // nếu embed hoặc video, mình có thể show lại
     return true;
   });

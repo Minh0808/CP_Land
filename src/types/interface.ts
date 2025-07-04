@@ -1,7 +1,10 @@
 import { ReactNode } from "react"
-import Img2016 from "../assets/image/canho1.jpg"
-import Img2017 from "../assets/image/canho2.jpg"
-import Img2018 from "../assets/image/canho3.jpg"
+import Img1 from '../assets/image/1.png'
+import Img2 from '../assets/image/2.png'
+import Img3 from '../assets/image/3.png'
+import Img4 from '../assets/image/4.png'
+import Img5 from '../assets/image/5.png'
+
 
 export interface PanelData {
    id: string
@@ -48,31 +51,31 @@ export interface TimelineItem {
 export const timelineData: TimelineItem[] = [
   {
     year: '1',
-    img: Img2018,
+    img: Img1,
     title: 'Am hiểu sâu thị trường địa phương',
     text: 'CP Land có đội ngũ giàu kinh nghiệm và hiểu rõ quy hoạch,tiềm năng phát triển của khu vực Lục Nam – nơi đang chứng kiến sự mở rộng nhanh chóng của các khu công nghiệp. Nhờ đó, công ty luôn đón đầu xu hướng và lựa chọn những vị trí đất có giá trị tăng trưởng cao.'
   },
   {
     year: '2',
-    img: Img2017,
+    img: Img2,
     title: 'Danh mục sản phẩm rõ ràng, pháp lý minh bạch',
     text: 'Toàn bộ sản phẩm đất nền do CP Land cung cấp đều có sổ đỏ riêng, quy hoạch ổn định, đảm bảo tính pháp lý rõ ràng, giúp nhà đầu tư và người mua an cư yên tâm tuyệt đối.'
   },
   {
     year: '3',
-    img: Img2016,
+    img: Img3,
     title: 'Tăng trưởng ổn định và bền vững',
     text: 'Trong 5 năm qua, CP Land đã mở rộng quỹ đất đáng kể, từng bước xây dựng uy tín và lòng tin từ khách hàng. Các sản phẩm bán ra luôn đạt tỉ lệ thanh khoản cao và được đánh giá có khả năng sinh lời tốt.'
   },
   {
     year: '4',
-    img: Img2016,
+    img: Img4,
     title: 'Mạng lưới kết nối tốt với chủ đầu tư và người mua',
     text: 'CP Land xây dựng hệ thống kết nối hiệu quả giữa người bán – người mua, đồng thời hợp tác chặt chẽ với chính quyền địa phương và các nhà đầu tư, góp phần thúc đẩy phát triển hạ tầng khu vực và gia tăng giá trị đất.'
   },
   {
     year: '5',
-    img: Img2016,
+    img: Img5,
     title: 'Dịch vụ tư vấn đầu tư chuyên sâu',
     text: 'CP Land không chỉ bán đất mà còn cung cấp giải pháp đầu tư, phân tích thị trường, định giá tài sản và hỗ trợ pháp lý – giúp khách hàng tối ưu lợi nhuận và giảm thiểu rủi ro trong đầu tư.'
   }
