@@ -77,11 +77,8 @@ const NewFeedsList: React.FC = () => {
    return (
       <Grid>
          {feeds.map((feed) => {
-            // lấy thumbnail đầu tiên nếu có
             const thumb = feed.media.find((m) => m.type === 'image')?.url;
-
-            // format ngày
-            const dateStr = new Date(feed.publishedAt!) // <-- non-null assertion
+            const dateStr = new Date(feed.publishedAt!)
                .toLocaleDateString('vi-VN', {
                   day: '2-digit',
                   month: '2-digit',

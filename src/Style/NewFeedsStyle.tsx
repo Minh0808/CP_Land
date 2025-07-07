@@ -117,7 +117,7 @@ export const SidebarItem = styled.a`
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 16px;
+  padding: 8px 10px;
   text-decoration: none;
   color: #333;
   border-bottom: 1px solid #eee;
@@ -135,8 +135,10 @@ export const SidebarItem = styled.a`
 
   span {
     flex: 1;
-    font-size: 0.95rem;
+    font-size: 14px;
     line-height: 1.3;
+    font-weight: bold;
+    color: #015ea7;
   }
 
   &:hover {

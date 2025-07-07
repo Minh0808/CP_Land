@@ -85,11 +85,14 @@ export interface SearchbarProps {
   onSearch?: (query: SearchbarQuery) => void;
 }
 export interface SearchbarQuery {
-   keyword: string;
-   provinceCode: string;
-   districtCode: string;
-   wardCode: string;
+  keyword?:       string;
+  provinceCode?:  string;
+  districtCode?:  string;
+  wardCode?:      string;
+  propertyType?:  string;
+  sortOrder?: 'price-asc' | 'price-desc';
 }
+
 /** 1 tỉnh/thành trong tinh_tp.json */
 export interface ProvinceItem {
    code: string;

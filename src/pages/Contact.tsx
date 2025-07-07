@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { sendMessage } from '../API/api';
 import { Link } from 'react-router-dom';
+import styled from 'styled-components';
 
 const Contact: React.FC = () => {
    const [name, setName] = useState('');
@@ -28,16 +29,15 @@ const Contact: React.FC = () => {
 
    return (
       <div className="flex flex-col justify-center items-center mt-[50px] gap-[20px] mb-[50px]">
-         <h1 style={{fontWeight: 'bold'}} className="text-[#015ea7] text-[26px]">THÔNG TIN LIÊN HỆ</h1>
+         <Title style={{fontWeight: 'bold'}} className="text-[#015ea7] text-[26px]">THÔNG TIN LIÊN HỆ</Title>
 
-         <iframe
+         <Iframe
             src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3514.72963322204!2d106.330019!3d21.2690489!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31356f006a83946b%3A0x5bc3b8091918dca0!2zQ1AgTEFORCDEkOG6pFQgVEjhu5QgQ8avIFZFTiBLQ04!5e1!3m2!1svi!2s!4v1750680719332!5m2!1svi!2s"
-            className="w-[80%] h-[500px]"
             allowFullScreen
             loading="lazy"
          />
 
-         <div className='flex flex-row w-[80%] gap-[20px] mt-[20px]'>
+         <ContactBody className='flex flex-row w-[80%] gap-[20px] mt-[20px]'>
             <div style={{fontWeight: 'bold'}} className="flex-1 flex flex-col gap-[10px] text-[18px]">
                <p className="font-medium">Công ty cổ phần CP-Land</p>
                <p>
@@ -48,7 +48,7 @@ const Contact: React.FC = () => {
                <p>Email: cpland.thongtin@gmail.com</p>
             </div>
 
-            <form
+            <FormSubmit
                onSubmit={(e) => {
                   e.preventDefault();
                   handlerSend();
@@ -93,10 +93,38 @@ const Contact: React.FC = () => {
                >
                   GỬI ĐI
                </button>
-            </form>
-         </div>
+            </FormSubmit>
+         </ContactBody>
       </div>
    );
 };
 
 export default Contact;
+
+const Title = styled.h1`
+   @media (max-width: 768px) {
+      font-size: 24px;
+   }
+`
+
+const Iframe = styled.iframe`
+   width: 80%;
+   height: 500px;
+   @media (max-width: 768px) {
+      width: 90%;
+      height: 200px;
+   }
+`;
+
+const ContactBody = styled.div`
+   @media (max-width: 768px) {
+      flex-direction: column;
+      width: 90%;
+   }
+`;
+
+const FormSubmit = styled.form`
+   @media (max-width: 768px) {
+      width: 100%;
+   }
+`;

@@ -116,3 +116,27 @@
 .ql-snow .ql-editor .ql-font-Georgia      { font-family: Georgia; }
 .ql-snow .ql-editor .ql-font-Verdana      { font-family: Verdana; }
 
+.ql-editor img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+/* quill-custom.css */
+/* .ql-container, .ql-editor {
+  overflow: visible !important;
+}
+
+.ql-image-resize-module .ql-resize-handle {
+  display: block;
+  width: 12px;
+  height: 12px;
+  background: #fff;
+  border: 1px solid #777;
+  box-sizing: border-box;
+  position: absolute;
+  cursor: nwse-resize;
+  z-index: 1;
+} */
+
+

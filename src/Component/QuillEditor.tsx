@@ -73,6 +73,7 @@ const toolbarOptions = [
    [{ header: 1 }, { header: 2 }], // H1, H2
 
    ['blockquote', 'code-block'], // blockquote, code-block
+   [{ align: [] }],
 ];
 
 // Danh sách formats phải bao gồm hết keys trên
@@ -95,6 +96,7 @@ const formats = [
    'header',
    'blockquote',
    'code-block',
+   'align',
 ];
 
 interface QuillEditorProps {
@@ -122,9 +124,10 @@ export default function QuillEditor({
          },
          formats,
       });
+      console.log('ImageResize module:', quillRef.current?.getModule('imageResize'));
 
       // khởi nội dung ban đầu
-      
+
       if (value) {
          quillRef.current.clipboard.dangerouslyPasteHTML(value);
       }

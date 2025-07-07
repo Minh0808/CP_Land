@@ -1,6 +1,5 @@
 // tailwind.config.js
 module.exports = {
-  // Với Tailwind v3+, dùng `content` để khai báo nơi Tailwind quét class
   content: [
     './src/**/*.{js,jsx,ts,tsx,html}',
   ],
@@ -8,7 +7,7 @@ module.exports = {
     screens: {
       xs: {max: '390px'},
       sm: '640px',  
-      md: '768px',  
+      md: {max: '768px'},  
       lg: '1024px',  
       xl: '1280px',  
       '2xl': '1536px',

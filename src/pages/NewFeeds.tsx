@@ -1,24 +1,31 @@
-import { useState, useEffect } from "react";
+// src/pages/NewFeeds.tsx
+import React, { useState, useEffect } from "react";
 import {
-  ArrowButton, Background, MainCard,
-  MainColumn, PageButton, Pagination,
-  Sidebar, SidebarHeader, SidebarItem,
-  SidebarList, Wrapper
+  ArrowButton,
+  Background,
+  MainCard,
+  MainColumn,
+  PageButton,
+  Pagination,
+  Sidebar,
+  SidebarHeader,
+  SidebarItem,
+  SidebarList,
+  Wrapper
 } from "../Style/NewFeedsStyle";
-import { NewsItem } from "../types/interface";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { fetchHotReal } from '../API/api';
+import { fetchNewFeeds, NewfeedsAD } from '../API/api';
 
 const ITEMS_PER_PAGE = 10;
 
 const NewFeeds: React.FC = () => {
-  const [news, setNews] = useState<NewsItem[]>([]);
+  const [news, setNews] = useState<NewfeedsAD[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    fetchHotReal()
+    fetchNewFeeds()
       .then(setNews)
-      .catch(err => console.error('Error fetching hot real RSS:', err));
+      .catch(err => console.error('Error fetching admin news:', err));
   }, []);
 
   const totalPages = Math.ceil(news.length / ITEMS_PER_PAGE);
@@ -28,17 +35,27 @@ const NewFeeds: React.FC = () => {
   return (
     <Background>
       <Wrapper>
+        {/* Column chính */}
         <MainColumn>
-          {mainNews.map((n, i) => (
-            <MainCard key={i} href={n.link} target="_blank" rel="noreferrer">
-              {n.image && <img src={n.image} alt={n.title} />}
-              <div>
-                <h3>{n.title}</h3>
-                <p>{n.summary}</p>
-              </div>
-            </MainCard>
-          ))}
+          {mainNews.map(item => {
+            const thumb = item.media[0]?.url;
+            return (
+              <MainCard
+                key={item.id}
+                href={`/tin-tuc/${item.id}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {thumb && <img src={thumb} alt={item.title} />}
+                <div>
+                  <h3>{item.title}</h3>
+                  <p>{item.excerpt}</p>
+                </div>
+              </MainCard>
+            );
+          })}
 
+          {/* Phân trang */}
           <Pagination>
             {currentPage > 1 && (
               <ArrowButton onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}>
@@ -64,15 +81,24 @@ const NewFeeds: React.FC = () => {
           </Pagination>
         </MainColumn>
 
+        {/* Sidebar */}
         <Sidebar>
           <SidebarHeader>TIN TỨC MỚI</SidebarHeader>
           <SidebarList>
-            {sideNews.map((n, i) => (
-              <SidebarItem key={i} href={n.link} target="_blank" rel="noreferrer">
-                {n.image && <img src={n.image} alt={n.title} />}
-                <span>{n.title}</span>
-              </SidebarItem>
-            ))}
+            {sideNews.map(item => {
+              const thumb = item.media[0]?.url;
+              return (
+                <SidebarItem
+                  key={item.id}
+                  href={`/tin-tuc/${item.id}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {thumb && <img src={thumb} alt={item.title} />}
+                  <span>{item.title}</span>
+                </SidebarItem>
+              );
+            })}
           </SidebarList>
         </Sidebar>
       </Wrapper>

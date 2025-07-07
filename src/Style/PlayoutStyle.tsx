@@ -76,6 +76,14 @@ export const LogoFooter = styled.img`
    width: 230px;
    height: 120px;
    margin-top: 50px;
+
+   @media (max-width: 768px) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      margin-top: 50px;
+   }
 `
 export const Footer = styled.div`
    background-color: #005a97;
@@ -87,11 +95,12 @@ export const Footer = styled.div`
    gap: 30px;
    
    @media (max-width: 768px) {
-      height: 600px;
+      height: 100%;
       flex-direction: column;
+      justify-content: space-between;
       gap: 20px;
-      margin-bottom: 30px;
-      align-items: center;
+      align-items: flex-start;
+      padding: 0 20px 20px 20px;
    }
 `
 export const InforFooter = styled.div`
@@ -99,9 +108,10 @@ export const InforFooter = styled.div`
    flex-direction: column;
    justify-content: center;
 
-   @media (max-width: 768px) {
+   /* @media (max-width: 768px) {
       max-width: 90%;
-   }
+      
+   } */
 `
 export const InforItem = styled.p`
    padding-top: 20px;
@@ -117,5 +127,7 @@ export const InforItem = styled.p`
 `
 
 export const ModalGroup = styled.div`
-   
+   @media (max-width: 768px) {
+      display: none;
+   }
 `
