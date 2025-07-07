@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchNewFeedById, NewfeedsAD } from '../API/api';
 import styled from 'styled-components';
+import { Helmet } from 'react-helmet-async';
 
 const Container = styled.div`
    max-width: 90%;
@@ -82,19 +83,23 @@ const NewFeedsDetail: React.FC = () => {
    if (error) return <Container>{error}</Container>;
    if (!feed) return <Container>Bài viết không tồn tại.</Container>;
 
-   // Lọc riêng media để show grid
-   //   const extraMedia: MediaItem[] = feed.media.filter(() => {
-   //     // nếu embed hoặc video, mình có thể show lại
-   //     return true;
-   //   });
+   const description = feed.excerpt
+      ? feed.excerpt.slice(0, 160) // lấy tối đa ~160 ký tự
+      : feed.title;
 
    return (
       <Container>
+         <Helmet>
+            <title>{feed.title} | CP Land</title>
+            <meta name="description" content={description} />
+            {/* bạn có thể thêm og:description, og:image, og:url… */}
+            <meta property="og:title" content={feed.title} />
+            <meta property="og:description" content={description} />
+            <meta property="og:image" content={feed.media[0]?.url} />
+            <meta property="og:url" content={`https://cpland.net/tin-tuc/${feed.id}`} />
+         </Helmet>
          <Title>{feed.title}</Title>
-         <Excerpt
-         >
-            {feed.excerpt}
-         </Excerpt>
+         <Excerpt>{feed.excerpt}</Excerpt>
 
          <Content dangerouslySetInnerHTML={{ __html: feed.content }} />
 
