@@ -19,7 +19,7 @@ export const SliderWrapper = styled.div`
    }
 
    @media (max-width: 768px) {
-      height: 125px;
+      height: 230px;
    }
 `;
 
@@ -100,7 +100,8 @@ export const CardCarousel = styled.div`
    @media (max-width: 768px) {
       max-width: 90%;
       button {
-         display: block;
+         display: flex;
+         justify-content: center;
       }
    }
 `;
@@ -177,7 +178,7 @@ export const SectionTitle = styled.h2`
    color: #015ea7;
 
    @media (max-width: 768px) {
-      font-size: 1.5rem;
+      font-size: 22px;
    }
 `;
 

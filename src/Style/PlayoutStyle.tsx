@@ -98,7 +98,7 @@ export const Footer = styled.div`
       height: 100%;
       flex-direction: column;
       justify-content: space-between;
-      gap: 20px;
+      gap: 0px;
       align-items: flex-start;
       padding: 0 20px 20px 20px;
    }

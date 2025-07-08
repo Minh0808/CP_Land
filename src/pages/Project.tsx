@@ -33,16 +33,15 @@ const Project: React.FC = () => {
    return (
       <Wraper>
          <Searchbar onSearch={(q) => setFilter(q)} />
-         <IoArrowBackCircleSharp
-            onClick={handleBack}
-            style={{
-               marginLeft: '70px',
-               marginTop: '20px',
-               cursor: 'pointer',
-               color: 'blue',
-               fontSize: '30px',
-            }}
-         />
+         <BackList>
+            <IoArrowBackCircleSharp
+               onClick={handleBack}
+               style={{
+                  color: 'blue',
+                  fontSize: '32px',
+               }}
+            />
+         </BackList>
 
          <ProjectBody>
             <PostList
@@ -156,5 +155,17 @@ const SidebarItem = styled.a`
 
    &:hover {
       background: #f5f5f5;
+   }
+`;
+
+const BackList = styled.div`
+   width: 100%;
+   margin-left: 70px;
+   margin-top: 20px;
+   cursor: pointer;
+   padding-bottom: 10px;
+
+   @media (max-width: 768px) {
+      margin-left: 15px;
    }
 `;
