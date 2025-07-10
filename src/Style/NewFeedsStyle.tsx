@@ -44,9 +44,11 @@ export const MainCard = styled.a`
    transition: border-color 0.2s ease;
 
    img {
-      flex: 0 0 246px;
+      /* flex: 0 0 246px; */
       height: 148px;
       object-fit: cover;
+      width: 246px;
+      max-width: 246px;
    }
 
    div {
@@ -127,15 +129,17 @@ export const SidebarItem = styled.a`
   }
 
   img {
-    flex: 0 0 60px;
-    height: 40px;
+    /* flex: 0 0 60px; */
+    width: 60px;
+    max-width: 60px;
+    height: 45px;
     object-fit: cover;
     border-radius: 2px;
   }
 
   span {
     flex: 1;
-    font-size: 14px;
+    font-size: 12px;
     line-height: 1.3;
     font-weight: bold;
     color: #015ea7;

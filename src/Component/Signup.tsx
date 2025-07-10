@@ -9,7 +9,7 @@ import {
   Title,
   Title2
 } from '../Style/SignUpStyle';
-import { signup } from '../API/api';
+import { signup, SignupDTO } from '../API/api';
 import axios from 'axios';
 
 interface Props {
@@ -36,13 +36,14 @@ const ModalSignUp: React.FC<Props> = ({ onClose }) => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    const payload: SignupDTO = { email, phone};
     if (!email || !phone) {
       setError('Vui lòng điền email và số điện thoại.');
       return;
     }
     setLoading(true);
     try {
-      await signup(email, phone);
+      await signup(payload);
       setSuccess('Đăng ký thành công!');
       setEmail('');
       setPhone('');

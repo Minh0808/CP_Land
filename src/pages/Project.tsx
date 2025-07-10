@@ -139,15 +139,17 @@ const SidebarItem = styled.a`
    }
 
    img {
-      flex: 0 0 60px;
-      height: 40px;
+      /* flex: 0 0 60px; */
+      width: 60px;
+      max-width: 60px;
+      height: 45px;
       object-fit: cover;
       border-radius: 2px;
    }
 
    span {
       flex: 1;
-      font-size: 14px;
+      font-size: 12px;
       line-height: 1.3;
       font-weight: bold;
       color: #015ea7;

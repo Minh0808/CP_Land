@@ -572,7 +572,7 @@ const PostCreate: React.FC = () => {
                   <FormGroup>
                      <Label>Chọn ảnh (*)</Label>
                      <FileWrapper>
-                        <FileLabel htmlFor="file-input">Chọn ảnh…</FileLabel>
+                        <FileLabel htmlFor="file-input">Chọn ảnh</FileLabel>
                         <InputFile
                            id="file-input"
                            type="file"
@@ -803,6 +803,8 @@ const FileLabel = styled.label`
    border-radius: 4px;
    cursor: pointer;
    font-size: 14px;
+   width: 110px;
+   justify-content: center;
 
    &:hover {
       background-color: #0069d9;

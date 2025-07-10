@@ -92,11 +92,17 @@ const NewFeedsDetail: React.FC = () => {
          <Helmet>
             <title>{feed.title} | CP Land</title>
             <meta name="description" content={description} />
-            {/* bạn có thể thêm og:description, og:image, og:url… */}
+
             <meta property="og:title" content={feed.title} />
             <meta property="og:description" content={description} />
             <meta property="og:image" content={feed.media[0]?.url} />
             <meta property="og:url" content={`https://cpland.net/tin-tuc/${feed.id}`} />
+            <meta property="og:type" content="website" />
+
+            <meta name="twitter:title" content={feed.title} />
+            <meta name="twitter:description" content={description} />
+            <meta name="twitter:image" content={feed.media[0]?.url} />
+            <meta name="twitter:card" content="summary_large_image" />
          </Helmet>
          <Title>{feed.title}</Title>
          <Excerpt>{feed.excerpt}</Excerpt>

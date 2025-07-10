@@ -27,8 +27,8 @@ export const Background = styled.div`
 
 export const Main = styled.main`
    flex: 1;
-   overflow-y: auto;
-   background: #f5f5f5;
+   overflow-x: hidden;
+   background: white;
 `
 export const Modal = styled.div`
    position: fixed;

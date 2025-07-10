@@ -175,6 +175,9 @@ const CreateNewFeeds: React.FC = () => {
          } else {
             await createNewfeedsAD(finalContent, finalMedia, title, excerpt);
             alert('Tạo mới thành công!');
+            setTitle('');
+            setExcerpt('');
+            setHtml('');
          }
          setEditingId(null);
          await loadList();

@@ -33,7 +33,6 @@ export interface Panel {
 export interface SignupDTO {
    email: string;
    phone: string;
-   createdAt: string;
 }
 
 export interface useMessDTO {
@@ -205,12 +204,12 @@ export async function deletePanel(id: string): Promise<void> {
 /**
  * Đăng ký (chỉ email + phone)
  */
-export async function signup(email: string, phone: string): Promise<SignupDTO> {
-   const res = await api.post<Wrapped<SignupDTO>>('/api/signup', { email, phone });
-   if (!res.data.data) {
-      throw new Error(res.data.message || 'Signup thất bại');
+export async function signup(data: SignupDTO) {
+   const res = await api.post<Wrapped<SignupDTO>>('/api/signup', data);
+   if (!res.data) {
+      throw new Error(res.data || 'Signup thất bại');
    }
-   return res.data.data;
+   return res.data;
 }
 
 export async function sendMessage(

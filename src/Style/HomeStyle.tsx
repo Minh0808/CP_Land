@@ -230,8 +230,10 @@ export const MainCard = styled.a`
    box-sizing: border-box;
    border-bottom: 2px solid transparent;
    transition: border-color 0.2s ease;
+   width: 360px;
    max-width: 360px;
-   max-height: 498px;
+   height: 442px;
+   max-height: 442px;
 
    img {
       width: 100%;
